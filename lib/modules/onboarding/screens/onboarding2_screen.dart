@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:luang_in/modules/auth/screens/login_screen.dart';
 import 'package:luang_in/utils/pallete_color.dart';
 
 class OnboardingController extends GetxController {
@@ -18,7 +19,7 @@ class OnboardingController extends GetxController {
       );
     } else {
       // TODO: Navigasi ke halaman login/utama
-      // Get.offAll(() => const LoginScreen());
+      Get.offAll(() => LoginScreen());
     }
   }
 
