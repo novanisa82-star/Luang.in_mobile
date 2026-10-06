@@ -9,10 +9,21 @@ class SkillProfileController extends GetxController {
   final roleController = TextEditingController();
   final skillController = TextEditingController();
 
-  var skills = <String>['Espresso Brewing', 'Cashier POS', 'Stock Inventory', 'Customer Care'].obs;
-  var experience = '2 - 4 Years'.obs;
-  
-  final experienceOptions = ['< 1 Year', '1 - 2 Years', '2 - 4 Years', '> 4 Years'];
+  var skills = <String>[
+    'Membuat Espresso',
+    'Kasir POS',
+    'Mengelola Stok',
+    'Pelayanan Pelanggan'
+  ].obs;
+
+  var experience = '2 - 4 Tahun'.obs;
+
+  final experienceOptions = [
+    '< 1 Tahun',
+    '1 - 2 Tahun',
+    '2 - 4 Tahun',
+    '> 4 Tahun'
+  ];
 
   @override
   void onClose() {
@@ -49,7 +60,8 @@ class SkillProfileController extends GetxController {
 class SkillProfileScreen extends StatelessWidget {
   SkillProfileScreen({Key? key}) : super(key: key);
 
-  final SkillProfileController controller = Get.put(SkillProfileController());
+  final SkillProfileController controller =
+      Get.put(SkillProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +69,10 @@ class SkillProfileScreen extends StatelessWidget {
       backgroundColor: PalleteColor.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24.0,
+            vertical: 24.0,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -80,7 +95,7 @@ class SkillProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   const Text(
-                    'Skill Profile',
+                    'Profil Keahlian',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -89,13 +104,17 @@ class SkillProfileScreen extends StatelessWidget {
                   ),
                 ],
               ),
+
               const SizedBox(height: 24),
+
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: PalleteColor.lightPurple.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: PalleteColor.lightPurple),
+                  border: Border.all(
+                    color: PalleteColor.lightPurple,
+                  ),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,10 +127,11 @@ class SkillProfileScreen extends StatelessWidget {
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        'Direct manual entry only. Add your verified skills and contacts below.',
+                        'Isi data secara manual. Tambahkan keahlian dan kontak WhatsApp yang aktif di bawah ini.',
                         style: TextStyle(
                           fontSize: 12,
-                          color: PalleteColor.primaryPurple.withOpacity(0.8),
+                          color: PalleteColor.primaryPurple
+                              .withOpacity(0.8),
                           height: 1.5,
                         ),
                       ),
@@ -119,152 +139,218 @@ class SkillProfileScreen extends StatelessWidget {
                   ],
                 ),
               ),
+
               const SizedBox(height: 24),
+
               const Text(
-                'Display Name',
+                'Nama Tampilan',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: PalleteColor.textDark,
                 ),
               ),
+
               const SizedBox(height: 8),
+
               TextField(
                 controller: controller.displayNameController,
                 decoration: InputDecoration(
                   hintText: 'Budi Santoso',
-                  hintStyle: const TextStyle(color: PalleteColor.textGrey),
+                  hintStyle: const TextStyle(
+                    color: PalleteColor.textGrey,
+                  ),
                   filled: true,
                   fillColor: PalleteColor.inputBackground,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: PalleteColor.borderColor),
+                    borderSide: const BorderSide(
+                      color: PalleteColor.borderColor,
+                    ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: PalleteColor.borderColor),
+                    borderSide: const BorderSide(
+                      color: PalleteColor.borderColor,
+                    ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: PalleteColor.primaryPurple),
+                    borderSide: const BorderSide(
+                      color: PalleteColor.primaryPurple,
+                    ),
                   ),
                 ),
               ),
+
               const SizedBox(height: 16),
+
               const Text(
-                'Contact WhatsApp / Phone',
+                'Nomor WhatsApp / Telepon',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: PalleteColor.textDark,
                 ),
               ),
+
               const SizedBox(height: 8),
+
               TextField(
                 controller: controller.contactController,
                 keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
                   hintText: '+62 812-3456-7890',
-                  hintStyle: const TextStyle(color: PalleteColor.textGrey),
+                  hintStyle: const TextStyle(
+                    color: PalleteColor.textGrey,
+                  ),
                   filled: true,
                   fillColor: PalleteColor.inputBackground,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: PalleteColor.borderColor),
+                    borderSide: const BorderSide(
+                      color: PalleteColor.borderColor,
+                    ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: PalleteColor.borderColor),
+                    borderSide: const BorderSide(
+                      color: PalleteColor.borderColor,
+                    ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: PalleteColor.primaryPurple),
+                    borderSide: const BorderSide(
+                      color: PalleteColor.primaryPurple,
+                    ),
                   ),
                 ),
               ),
+
               const SizedBox(height: 16),
+
               const Text(
-                'Primary Trade / Role',
+                'Pekerjaan / Peran Utama',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: PalleteColor.textDark,
                 ),
               ),
+
               const SizedBox(height: 8),
+
               TextField(
                 controller: controller.roleController,
                 decoration: InputDecoration(
-                  hintText: 'Barista & Event Coordinator',
-                  hintStyle: const TextStyle(color: PalleteColor.textGrey),
+                  hintText: 'Barista & Koordinator Acara',
+                  hintStyle: const TextStyle(
+                    color: PalleteColor.textGrey,
+                  ),
                   filled: true,
                   fillColor: PalleteColor.inputBackground,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: PalleteColor.borderColor),
+                    borderSide: const BorderSide(
+                      color: PalleteColor.borderColor,
+                    ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: PalleteColor.borderColor),
+                    borderSide: const BorderSide(
+                      color: PalleteColor.borderColor,
+                    ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: PalleteColor.primaryPurple),
+                    borderSide: const BorderSide(
+                      color: PalleteColor.primaryPurple,
+                    ),
                   ),
                 ),
               ),
+
               const SizedBox(height: 16),
+
               const Text(
-                'Manual Skill Tags',
+                'Daftar Keahlian',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: PalleteColor.textDark,
                 ),
               ),
+
               const SizedBox(height: 8),
+
               Row(
                 children: [
                   Expanded(
                     child: TextField(
                       controller: controller.skillController,
                       decoration: InputDecoration(
-                        hintText: 'Type a skill...',
-                        hintStyle: const TextStyle(color: PalleteColor.textGrey),
+                        hintText: 'Masukkan keahlian...',
+                        hintStyle: const TextStyle(
+                          color: PalleteColor.textGrey,
+                        ),
                         filled: true,
                         fillColor: PalleteColor.inputBackground,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 16,
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: PalleteColor.borderColor),
+                          borderSide: const BorderSide(
+                            color: PalleteColor.borderColor,
+                          ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: PalleteColor.borderColor),
+                          borderSide: const BorderSide(
+                            color: PalleteColor.borderColor,
+                          ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: PalleteColor.primaryPurple),
+                          borderSide: const BorderSide(
+                            color: PalleteColor.primaryPurple,
+                          ),
                         ),
                       ),
                     ),
                   ),
+
                   const SizedBox(width: 12),
+
                   ElevatedButton(
                     onPressed: controller.addSkill,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: PalleteColor.primaryPurple,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      backgroundColor:
+                          PalleteColor.primaryPurple,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 16,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                       elevation: 0,
                     ),
                     child: const Text(
-                      '+ Add',
+                      '+ Tambah',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -274,93 +360,130 @@ class SkillProfileScreen extends StatelessWidget {
                   ),
                 ],
               ),
+
               const SizedBox(height: 16),
-              Obx(() => Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: controller.skills.map((skill) => Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: PalleteColor.lightPurple,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        skill,
-                        style: const TextStyle(
-                          color: PalleteColor.primaryPurple,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
+
+              Obx(
+                () => Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: controller.skills.map(
+                    (skill) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
                         ),
-                      ),
-                      const SizedBox(width: 6),
-                      GestureDetector(
-                        onTap: () => controller.removeSkill(skill),
-                        child: const Icon(
-                          Icons.close,
-                          size: 14,
-                          color: PalleteColor.primaryPurple,
+                        decoration: BoxDecoration(
+                          color: PalleteColor.lightPurple,
+                          borderRadius:
+                              BorderRadius.circular(8),
                         ),
-                      ),
-                    ],
-                  ),
-                )).toList(),
-              )),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              skill,
+                              style: const TextStyle(
+                                color:
+                                    PalleteColor.primaryPurple,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            GestureDetector(
+                              onTap: () =>
+                                  controller.removeSkill(skill),
+                              child: const Icon(
+                                Icons.close,
+                                size: 14,
+                                color:
+                                    PalleteColor.primaryPurple,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ).toList(),
+                ),
+              ),
+
               const SizedBox(height: 16),
+
               const Text(
-                'Years of Experience',
+                'Pengalaman Kerja',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: PalleteColor.textDark,
                 ),
               ),
+
               const SizedBox(height: 8),
+
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: PalleteColor.inputBackground,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: PalleteColor.borderColor),
-                ),
-                child: Obx(() => DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    isExpanded: true,
-                    value: controller.experience.value,
-                    icon: const Icon(Icons.keyboard_arrow_down, color: PalleteColor.textDark),
-                    items: controller.experienceOptions.map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(
-                          value,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: PalleteColor.textDark,
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: controller.updateExperience,
+                  border: Border.all(
+                    color: PalleteColor.borderColor,
                   ),
-                )),
+                ),
+                child: Obx(
+                  () => DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      value: controller.experience.value,
+                      icon: const Icon(
+                        Icons.keyboard_arrow_down,
+                        color: PalleteColor.textDark,
+                      ),
+                      items: controller.experienceOptions.map(
+                        (String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: PalleteColor.textDark,
+                              ),
+                            ),
+                          );
+                        },
+                      ).toList(),
+                      onChanged:
+                          controller.updateExperience,
+                    ),
+                  ),
+                ),
               ),
+
               const SizedBox(height: 32),
+
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: controller.saveProfile,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: PalleteColor.primaryPurple,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor:
+                        PalleteColor.primaryPurple,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     elevation: 0,
                   ),
                   child: const Text(
-                    'Save Skill Profile',
+                    'Simpan Profil Keahlian',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -370,9 +493,15 @@ class SkillProfileScreen extends StatelessWidget {
                 ),
               ),
             ],
-          ).animate(delay: 50.ms)
+          )
+              .animate(delay: 50.ms)
               .fade(duration: 400.ms)
-              .slideY(begin: 0.1, end: 0, duration: 400.ms, curve: Curves.easeOutQuad),
+              .slideY(
+                begin: 0.1,
+                end: 0,
+                duration: 400.ms,
+                curve: Curves.easeOutQuad,
+              ),
         ),
       ),
     );

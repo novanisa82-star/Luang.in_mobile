@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:luang_in/modules/onboarding/screens/onboarding1_screen.dart';
+import 'package:luang_in/modules/onboarding/screens/onboarding_screen.dart';
 import 'package:luang_in/utils/pallete_color.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -16,11 +16,11 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    // Setelah 2 detik pindah ke Onboarding 1
+    // Setelah 2 detik pindah ke halaman Onboarding
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
         Get.off(
-          () => const OnboardingScreen1(),
+          () => const OnboardingScreen(),
           transition: Transition.fadeIn,
           duration: const Duration(milliseconds: 500),
         );
@@ -94,11 +94,12 @@ class _SplashScreenState extends State<SplashScreen> {
                         ),
                       ],
                     ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.sync,
-                        size: 50,
-                        color: Color(0xFF6A0DAD),
+                    child: Center(
+                      child: Image.asset(
+                        'assets/images/logo.jpeg',
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
@@ -107,7 +108,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
                   // Judul Aplikasi
                   const Text(
-                    'WorkLoop',
+                    'Luang.In',
                     style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.w800,
@@ -120,7 +121,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
                   // Subjudul
                   const Text(
-                    'FAST GIGS. LOCAL IMPACT.',
+                    'KERJA CEPAT. PELUANG DEKAT.',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -145,7 +146,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       ),
                       const SizedBox(width: 10),
                       Text(
-                        'Connecting opportunities...',
+                        'Menghubungkan peluang kerja...',
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.9),
                           fontSize: 14,
@@ -160,7 +161,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 24.0),
                     child: Text(
-                      'v2.4.0 • Modern Gig Engine',
+                      'v2.4.0 • Platform Kerja Lokal',
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.6),
                         fontSize: 12,

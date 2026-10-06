@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luang_in/modules/auth/screens/login_screen.dart';
 import 'package:luang_in/utils/pallete_color.dart';
+import 'package:lottie/lottie.dart';
 
 class OnboardingController extends GetxController {
   final PageController pageController = PageController();
@@ -18,7 +19,7 @@ class OnboardingController extends GetxController {
         curve: Curves.easeIn,
       );
     } else {
-      // TODO: Navigasi ke halaman login/utama
+      // Navigasi ke halaman login
       Get.offAll(() => LoginScreen());
     }
   }
@@ -30,8 +31,8 @@ class OnboardingController extends GetxController {
   }
 }
 
-class OnboardingScreen2 extends StatelessWidget {
-  const OnboardingScreen2({Key? key}) : super(key: key);
+class OnboardingScreen extends StatelessWidget {
+  const OnboardingScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +44,15 @@ class OnboardingScreen2 extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 16.0,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'WorkLoop',
+                    'Luang.In',
                     style: TextStyle(
                       color: PalleteColor.primaryPurple,
                       fontSize: 18,
@@ -57,10 +61,10 @@ class OnboardingScreen2 extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
-                      // TODO: Aksi Skip
+                      Get.offAll(() => LoginScreen());
                     },
                     child: Text(
-                      'Skip',
+                      'Lewati',
                       style: TextStyle(
                         color: PalleteColor.textGrey.withOpacity(0.7),
                         fontSize: 16,
@@ -71,6 +75,7 @@ class OnboardingScreen2 extends StatelessWidget {
                 ],
               ),
             ),
+
             Expanded(
               child: PageView(
                 controller: controller.pageController,
@@ -78,40 +83,56 @@ class OnboardingScreen2 extends StatelessWidget {
                 children: [
                   _buildOnboardingPage(
                     illustration: _buildPage1Illustration(),
-                    title: 'Find Nearest Gigs',
-                    description: 'Discover flexible freelance and hourly shifts right around your neighborhood with live GPS radius tracking.',
+                    title: 'Cari Kerja Terdekat',
+                    description:
+                        'Temukan pekerjaan fleksibel dan kerja harian di sekitar kamu dengan bantuan lokasi GPS secara langsung.',
                   ),
+
                   _buildOnboardingPage(
                     illustration: _buildPage2Illustration(),
-                    title: 'Chatbot Assistant',
-                    description: 'Meet your smart AI career co-pilot. Get instant gig recommendations, profile polish, and personalized interview prep.',
+                    title: 'Asisten Chatbot AI',
+                    description:
+                        'Dapatkan rekomendasi pekerjaan yang sesuai, tips untuk meningkatkan profil, dan persiapan wawancara kerja.',
                   ),
+
                   _buildOnboardingPage(
                     illustration: const Center(
-                      child: Icon(Icons.rocket_launch, size: 100, color: PalleteColor.primaryPurple),
+                      child: Icon(
+                        Icons.rocket_launch,
+                        size: 100,
+                        color: PalleteColor.primaryPurple,
+                      ),
                     ),
-                    title: 'Get Started Now',
-                    description: 'Join the community and start your journey with WorkLoop today.',
+                    title: 'Mulai Sekarang',
+                    description:
+                        'Bergabunglah dan temukan pekerjaan yang sesuai dengan kemampuan kamu bersama Luang.In.',
                   ),
                 ],
               ),
             ),
-            
-            // Indikator dibungkus Obx agar reaktif
-            Obx(() => Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                3,
-                (index) => _buildDot(
-                  index: index, 
-                  currentPage: controller.currentPage.value,
+
+            // Indikator halaman
+            Obx(
+              () => Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  3,
+                  (index) => _buildDot(
+                    index: index,
+                    currentPage: controller.currentPage.value,
+                  ),
                 ),
               ),
-            )),
-            
+            ),
+
             const SizedBox(height: 32),
+
             Padding(
-              padding: const EdgeInsets.only(left: 24.0, right: 24.0, bottom: 32.0),
+              padding: const EdgeInsets.only(
+                left: 24.0,
+                right: 24.0,
+                bottom: 32.0,
+              ),
               child: SizedBox(
                 width: double.infinity,
                 height: 56,
@@ -127,15 +148,18 @@ class OnboardingScreen2 extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Teks tombol dibungkus Obx agar berubah di halaman terakhir
-                      Obx(() => Text(
-                        controller.currentPage.value == 2 ? 'Get Started' : 'Next Step',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                      Obx(
+                        () => Text(
+                          controller.currentPage.value == 2
+                              ? 'Mulai Sekarang'
+                              : 'Lanjut',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
                         ),
-                      )),
+                      ),
                       const SizedBox(width: 8),
                       const Icon(
                         Icons.arrow_forward,
@@ -153,10 +177,15 @@ class OnboardingScreen2 extends StatelessWidget {
     );
   }
 
-  Widget _buildOnboardingPage({required Widget illustration, required String title, required String description}) {
+  Widget _buildOnboardingPage({
+    required Widget illustration,
+    required String title,
+    required String description,
+  }) {
     return Column(
       children: [
         Expanded(child: illustration),
+
         Text(
           title,
           style: const TextStyle(
@@ -165,7 +194,9 @@ class OnboardingScreen2 extends StatelessWidget {
             color: PalleteColor.textDark,
           ),
         ),
+
         const SizedBox(height: 16),
+
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40.0),
           child: Text(
@@ -179,19 +210,25 @@ class OnboardingScreen2 extends StatelessWidget {
             ),
           ),
         ),
+
         const SizedBox(height: 16),
       ],
     );
   }
 
-  Widget _buildDot({required int index, required int currentPage}) {
+  Widget _buildDot({
+    required int index,
+    required int currentPage,
+  }) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       margin: const EdgeInsets.only(right: 6),
       height: 6,
       width: currentPage == index ? 24 : 6,
       decoration: BoxDecoration(
-        color: currentPage == index ? PalleteColor.primaryPurple : const Color(0xFFE5E5EA),
+        color: currentPage == index
+            ? PalleteColor.primaryPurple
+            : const Color(0xFFE5E5EA),
         borderRadius: BorderRadius.circular(3),
       ),
     );
@@ -202,34 +239,11 @@ class OnboardingScreen2 extends StatelessWidget {
       child: SizedBox(
         width: 300,
         height: 300,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Container(width: 260, height: 260, decoration: const BoxDecoration(color: Color(0xFFF8F4FF), shape: BoxShape.circle)),
-            Container(width: 170, height: 170, decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: const Color(0xFFEBE0FF), width: 1.5))),
-            Container(width: 110, height: 110, decoration: const BoxDecoration(color: Color(0xFFF0E5FF), shape: BoxShape.circle)),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: const [
-                Icon(Icons.location_on, size: 65, color: PalleteColor.primaryPurple),
-                Icon(Icons.person, size: 45, color: PalleteColor.primaryPurple),
-              ],
-            ),
-            Positioned(
-              top: 30, right: 30,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 15, offset: const Offset(0, 5))]),
-                child: Row(
-                  children: const [
-                    Icon(Icons.near_me, size: 14, color: PalleteColor.primaryPurple),
-                    SizedBox(width: 4),
-                    Text('0.8 km away', style: TextStyle(color: PalleteColor.primaryPurple, fontSize: 12, fontWeight: FontWeight.w600)),
-                  ],
-                ),
-              ),
-            ),
-          ],
+        child: Lottie.asset(
+          'assets/lottie/Search.json',
+          width: 150,
+          height: 150,
+          fit: BoxFit.fill,
         ),
       ),
     );
@@ -243,27 +257,79 @@ class OnboardingScreen2 extends StatelessWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            Container(width: 260, height: 260, decoration: const BoxDecoration(color: Color(0xFFF8F4FF), shape: BoxShape.circle)),
-            const Icon(Icons.smart_toy_rounded, size: 110, color: PalleteColor.primaryPurple),
-            Positioned(
-              top: 65, right: 65,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(color: PalleteColor.primaryPurple, borderRadius: BorderRadius.circular(12)),
-                child: const Text('Tips ready', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700)),
+            Container(
+              width: 260,
+              height: 260,
+              decoration: const BoxDecoration(
+                color: Color(0xFFF8F4FF),
+                shape: BoxShape.circle,
               ),
             ),
+
+            const Icon(
+              Icons.smart_toy_rounded,
+              size: 110,
+              color: PalleteColor.primaryPurple,
+            ),
+
+            Positioned(
+              top: 65,
+              right: 65,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: PalleteColor.primaryPurple,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Text(
+                  'Tips tersedia',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ),
+
             Positioned(
               bottom: 30,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: PalleteColor.primaryPurple.withOpacity(0.08), blurRadius: 15, offset: const Offset(0, 5))]),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: PalleteColor.primaryPurple.withOpacity(0.08),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: const [
-                    Icon(Icons.bolt, size: 16, color: Color(0xFFFF9800)),
+                    Icon(
+                      Icons.bolt,
+                      size: 16,
+                      color: Color(0xFFFF9800),
+                    ),
                     SizedBox(width: 6),
-                    Text('24/7 AI Smart Matching', style: TextStyle(color: PalleteColor.primaryPurple, fontSize: 12, fontWeight: FontWeight.w600)),
+                    Text(
+                      'Pencocokan AI 24/7',
+                      style: TextStyle(
+                        color: PalleteColor.primaryPurple,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ],
                 ),
               ),

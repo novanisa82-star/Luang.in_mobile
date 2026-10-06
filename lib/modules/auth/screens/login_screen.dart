@@ -29,7 +29,7 @@ class LoginScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Text(
-                          'WL',
+                          'LI',
                           style: TextStyle(
                             color: PalleteColor.primaryPurple,
                             fontSize: 20,
@@ -37,23 +37,28 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+
                       const SizedBox(height: 32),
+
                       const Text(
-                        'Welcome Back',
+                        'Selamat Datang Kembali',
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
                           color: PalleteColor.textDark,
                         ),
                       ),
+
                       const SizedBox(height: 8),
+
                       const Text(
-                        'Sign in to manage your gigs and applicants.',
+                        'Masuk untuk mengelola pekerjaan dan pelamar Anda.',
                         style: TextStyle(
                           fontSize: 14,
                           color: PalleteColor.textGrey,
                         ),
                       ),
+
                       const SizedBox(height: 32),
 
                       OutlinedButton(
@@ -77,7 +82,7 @@ class LoginScreen extends StatelessWidget {
                             ),
                             SizedBox(width: 8),
                             Text(
-                              'Log In with Google',
+                              'Masuk dengan Google',
                               style: TextStyle(
                                 color: PalleteColor.textDark,
                                 fontSize: 16,
@@ -87,7 +92,9 @@ class LoginScreen extends StatelessWidget {
                           ],
                         ),
                       ),
+
                       const SizedBox(height: 32),
+
                       Row(
                         children: [
                           const Expanded(
@@ -96,7 +103,7 @@ class LoginScreen extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Text(
-                              'OR EMAIL',
+                              'ATAU EMAIL',
                               style: TextStyle(
                                 color: PalleteColor.textGrey,
                                 fontSize: 12,
@@ -109,22 +116,25 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ],
                       ),
+
                       const SizedBox(height: 32),
+
                       const Text(
-                        'Email Address',
+                        'Alamat Email',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: PalleteColor.textDark,
                         ),
                       ),
+
                       const SizedBox(height: 8),
 
                       TextField(
                         controller: controller.loginEmailController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          hintText: 'alex.worker@gmail.com',
+                          hintText: 'nama@gmail.com',
                           hintStyle: const TextStyle(
                             color: PalleteColor.textGrey,
                           ),
@@ -154,12 +164,14 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+
                       const SizedBox(height: 24),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
-                            'Password',
+                            'Kata Sandi',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -169,7 +181,7 @@ class LoginScreen extends StatelessWidget {
                           GestureDetector(
                             onTap: () {},
                             child: const Text(
-                              'Forgot?',
+                              'Lupa?',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -179,6 +191,7 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ],
                       ),
+
                       const SizedBox(height: 8),
 
                       TextField(
@@ -215,14 +228,15 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+
                       const SizedBox(height: 32),
+
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          // PERBAIKAN: Gunakan format () => untuk mengeksekusi fungsi
                           onPressed: () {
                             try {
-                              debugPrint('1. SIGN IN DITEKAN');
+                              debugPrint('1. TOMBOL MASUK DITEKAN');
                               Get.offAll(() => MainScreen());
                               debugPrint('2. Get.offAll DIPANGGIL');
                             } catch (e, stackTrace) {
@@ -239,7 +253,7 @@ class LoginScreen extends StatelessWidget {
                             elevation: 0,
                           ),
                           child: const Text(
-                            'Sign In',
+                            'Masuk',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -248,18 +262,22 @@ class LoginScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+
                       const SizedBox(height: 24),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text(
-                            "Don't have an account? ",
-                            style: TextStyle(color: PalleteColor.textGrey),
+                            'Belum punya akun? ',
+                            style: TextStyle(
+                              color: PalleteColor.textGrey,
+                            ),
                           ),
                           GestureDetector(
                             onTap: () => Get.to(() => RegisterScreen()),
                             child: const Text(
-                              'Register',
+                              'Daftar',
                               style: TextStyle(
                                 color: PalleteColor.primaryPurple,
                                 fontWeight: FontWeight.bold,

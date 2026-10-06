@@ -20,7 +20,7 @@ class RegisterScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Logo Badge "WL"
+              // Logo Badge "LI"
               Container(
                 width: 44,
                 height: 44,
@@ -30,7 +30,7 @@ class RegisterScreen extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    'WL',
+                    'LI',
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
@@ -42,9 +42,9 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 28),
 
-              // Title
+              // Judul
               Text(
-                'Create Account',
+                'Buat Akun',
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 26,
                   fontWeight: FontWeight.w800,
@@ -55,9 +55,9 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 6),
 
-              // Subtitle
+              // Subjudul
               Text(
-                'Start hiring talent or taking gigs in minutes.',
+                'Mulai mencari atau membuka pekerjaan dalam hitungan menit.',
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
@@ -67,7 +67,7 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 28),
 
-              // Google SSO Button
+              // Tombol Daftar dengan Google
               OutlinedButton(
                 onPressed: controller.loginWithGoogle,
                 style: OutlinedButton.styleFrom(
@@ -92,7 +92,7 @@ class RegisterScreen extends StatelessWidget {
                     ),
                     const SizedBox(width: 10),
                     Text(
-                      'Sign Up with Google',
+                      'Daftar dengan Google',
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
@@ -105,7 +105,7 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              // Divider "OR REGISTER MANUAL"
+              // Pemisah "ATAU DAFTAR MANUAL"
               Row(
                 children: [
                   const Expanded(
@@ -114,7 +114,7 @@ class RegisterScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 14),
                     child: Text(
-                      'OR REGISTER MANUAL',
+                      'ATAU DAFTAR MANUAL',
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
@@ -131,9 +131,9 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 24),
 
-              // Field 1: Full Legal Name
+              // Field 1: Nama Lengkap
               Text(
-                'Full Legal Name',
+                'Nama Lengkap',
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -149,7 +149,7 @@ class RegisterScreen extends StatelessWidget {
                   color: const Color(0xFF111827),
                 ),
                 decoration: InputDecoration(
-                  hintText: 'e.g. Maya Indah',
+                  hintText: 'contoh: Maya Indah',
                   hintStyle: GoogleFonts.plusJakartaSans(
                     fontSize: 14,
                     color: const Color(0xFF9CA3AF),
@@ -195,7 +195,7 @@ class RegisterScreen extends StatelessWidget {
                   color: const Color(0xFF111827),
                 ),
                 decoration: InputDecoration(
-                  hintText: 'name@domain.com',
+                  hintText: 'nama@domain.com',
                   hintStyle: GoogleFonts.plusJakartaSans(
                     fontSize: 14,
                     color: const Color(0xFF9CA3AF),
@@ -222,9 +222,9 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 18),
 
-              // Field 3: Password
+              // Field 3: Kata Sandi
               Text(
-                'Password',
+                'Kata Sandi',
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -241,7 +241,7 @@ class RegisterScreen extends StatelessWidget {
                   color: const Color(0xFF111827),
                 ),
                 decoration: InputDecoration(
-                  hintText: 'Create strong password',
+                  hintText: 'Buat kata sandi yang kuat',
                   hintStyle: GoogleFonts.plusJakartaSans(
                     fontSize: 14,
                     color: const Color(0xFF9CA3AF),
@@ -268,7 +268,7 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              // Checkbox Terms of Service
+              // Checkbox Syarat Layanan
               Obx(
                 () => Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -288,7 +288,7 @@ class RegisterScreen extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        "I agree to WorkLoop's Terms of Service and Privacy Policy.",
+                        "Saya menyetujui Syarat dan Ketentuan serta Kebijakan Privasi Luang.In.",
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
@@ -303,7 +303,7 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 28),
 
-              // Create Account Button
+              // Tombol Buat Akun
               SizedBox(
                 width: double.infinity,
                 height: 52,
@@ -330,7 +330,7 @@ class RegisterScreen extends StatelessWidget {
                     child: Container(
                       alignment: Alignment.center,
                       child: Text(
-                        'Create Account',
+                        'Buat Akun',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
@@ -344,13 +344,13 @@ class RegisterScreen extends StatelessWidget {
 
               const SizedBox(height: 32),
 
-              // Bottom Link: Log In
+              // Link Bawah: Masuk
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Already a member? ',
+                      'Sudah punya akun? ',
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -362,7 +362,7 @@ class RegisterScreen extends StatelessWidget {
                         Get.off(() => LoginScreen());
                       },
                       child: Text(
-                        'Log In',
+                        'Masuk',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 13,
                           fontWeight: FontWeight.w800,
