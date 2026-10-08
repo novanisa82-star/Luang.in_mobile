@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:luang_in/modules/riwayat/screens/riwayat_screen.dart';
 import '../controllers/main_controller.dart';
 import '../../../utils/pallete_color.dart';
 import '../../home/screens/home_screen.dart';
@@ -14,14 +15,18 @@ class MainScreen extends StatelessWidget {
   final List<Widget> screens = [
     HomeScreen(),
     const Center(child: Text('AI Chat Screen')),
-    const Center(child: Text('History Screen')),
+    const RiwayatScreen(),
     const Center(child: Text('Profile Screen')),
   ];
 
   static const List<_NavItem> _items = [
     _NavItem(Icons.explore_outlined, Icons.explore_rounded, 'Home'),
     _NavItem(Icons.smart_toy_outlined, Icons.smart_toy_rounded, 'AI Chat'),
-    _NavItem(Icons.receipt_long_outlined, Icons.receipt_long_rounded, 'History'),
+    _NavItem(
+      Icons.receipt_long_outlined,
+      Icons.receipt_long_rounded,
+      'History',
+    ),
     _NavItem(Icons.person_outline_rounded, Icons.person_rounded, 'Profile'),
   ];
 
@@ -39,24 +44,30 @@ class MainScreen extends StatelessWidget {
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 0, 24, 14),
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(32),
+            borderRadius: BorderRadius.circular(30),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
               child: Container(
-                height: 72,
+                height: 70,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E1A2E).withOpacity(0.92),
-                  borderRadius: BorderRadius.circular(32),
+                  // Kaca frosted modern: Putih semi-transparan
+                  color: Colors.white.withOpacity(0.82),
+                  borderRadius: BorderRadius.circular(30),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.08),
-                    width: 1,
+                    color: Colors.white.withOpacity(0.6),
+                    width: 1.5,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: PalleteColor.primaryPurple.withOpacity(0.25),
-                      blurRadius: 30,
+                      color: Colors.black.withOpacity(0.06),
+                      blurRadius: 24,
+                      offset: const Offset(0, 8),
+                    ),
+                    BoxShadow(
+                      color: PalleteColor.primaryPurple.withOpacity(0.12),
+                      blurRadius: 32,
                       offset: const Offset(0, 12),
                     ),
                   ],
@@ -66,15 +77,21 @@ class MainScreen extends StatelessWidget {
                   final n = _items.length;
                   return Stack(
                     children: [
-                      // Indikator yang meluncur ke tab aktif
+                      // Indikator sliding background (Kapsul aktif)
                       AnimatedAlign(
-                        duration: const Duration(milliseconds: 350),
-                        curve: Curves.easeOutBack,
-                        alignment: Alignment(-1 + 2 * selected / (n - 1), 0),
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeOutCubic,
+                        alignment: Alignment(
+                          n > 1 ? -1 + (2 * selected / (n - 1)) : 0,
+                          0,
+                        ),
                         child: FractionallySizedBox(
                           widthFactor: 1 / n,
                           child: Padding(
-                            padding: const EdgeInsets.all(8),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 6,
+                            ),
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(24),
@@ -89,8 +106,8 @@ class MainScreen extends StatelessWidget {
                                 boxShadow: [
                                   BoxShadow(
                                     color: PalleteColor.primaryPurple
-                                        .withOpacity(0.55),
-                                    blurRadius: 16,
+                                        .withOpacity(0.4),
+                                    blurRadius: 12,
                                     offset: const Offset(0, 4),
                                   ),
                                 ],
@@ -99,7 +116,7 @@ class MainScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      // Ikon + label
+                      // Row tombol ikon + label
                       Row(
                         children: List.generate(n, (index) {
                           return Expanded(
@@ -147,6 +164,9 @@ class _NavButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final unselectedColor = Colors.grey.shade600;
+    const selectedColor = Colors.white;
+
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -154,22 +174,22 @@ class _NavButton extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           AnimatedScale(
-            scale: isSelected ? 1.15 : 1.0,
+            scale: isSelected ? 1.1 : 1.0,
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeOutBack,
             child: Icon(
               isSelected ? item.activeIcon : item.icon,
-              size: 24,
-              color: isSelected ? Colors.white : Colors.white54,
+              size: 22,
+              color: isSelected ? selectedColor : unselectedColor,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 3),
           AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 250),
+            duration: const Duration(milliseconds: 200),
             style: TextStyle(
-              fontSize: 10.5,
-              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-              color: isSelected ? Colors.white : Colors.white54,
+              fontSize: 10,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+              color: isSelected ? selectedColor : unselectedColor,
             ),
             child: Text(item.label),
           ),

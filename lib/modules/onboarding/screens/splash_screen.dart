@@ -16,15 +16,14 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    // Setelah 2 detik pindah ke halaman Onboarding
     Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        Get.off(
-          () => const OnboardingScreen(),
-          transition: Transition.fadeIn,
-          duration: const Duration(milliseconds: 500),
-        );
-      }
+      if (!mounted) return;
+
+      Get.offAll(
+        () => const OnboardingScreen(),
+        transition: Transition.fadeIn,
+        duration: const Duration(milliseconds: 500),
+      );
     });
   }
 
@@ -33,12 +32,10 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Container(
         width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: PalleteColor.gradient,
-        ),
+        decoration: BoxDecoration(gradient: PalleteColor.gradient),
         child: Stack(
           children: [
-            // Aksen Lingkaran Kanan Atas
+            // Lingkaran kanan atas
             Positioned(
               top: -80,
               right: -80,
@@ -55,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
 
-            // Aksen Lingkaran Kiri Bawah
+            // Lingkaran kiri bawah
             Positioned(
               bottom: 100,
               left: -150,
@@ -72,14 +69,13 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
 
-            // Konten Utama
             SafeArea(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Spacer(flex: 3),
 
-                  // Kotak Logo Putih
+                  // Logo
                   Container(
                     width: 110,
                     height: 110,
@@ -106,7 +102,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
                   const SizedBox(height: 24),
 
-                  // Judul Aplikasi
+                  // Nama aplikasi
                   const Text(
                     'Luang.In',
                     style: TextStyle(
@@ -119,7 +115,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
                   const SizedBox(height: 8),
 
-                  // Subjudul
+                  // Slogan
                   const Text(
                     'KERJA CEPAT. PELUANG DEKAT.',
                     style: TextStyle(
@@ -159,7 +155,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
                   // Versi
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 24.0),
+                    padding: const EdgeInsets.only(bottom: 24),
                     child: Text(
                       'v2.4.0 • Platform Kerja Lokal',
                       style: TextStyle(

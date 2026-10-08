@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
+
 import 'package:luang_in/modules/auth/screens/login_screen.dart';
 import 'package:luang_in/utils/pallete_color.dart';
-import 'package:lottie/lottie.dart';
 
 class OnboardingController extends GetxController {
   final PageController pageController = PageController();
-  var currentPage = 0.obs;
+
+  final RxInt currentPage = 0.obs;
 
   void onPageChanged(int index) {
     currentPage.value = index;
@@ -16,12 +18,23 @@ class OnboardingController extends GetxController {
     if (currentPage.value < 2) {
       pageController.nextPage(
         duration: const Duration(milliseconds: 300),
-        curve: Curves.easeIn,
+        curve: Curves.easeInOut,
       );
     } else {
-      // Navigasi ke halaman login
-      Get.offAll(() => LoginScreen());
+      Get.offAll(
+        () => LoginScreen(),
+        transition: Transition.fadeIn,
+        duration: const Duration(milliseconds: 400),
+      );
     }
+  }
+
+  void skipOnboarding() {
+    Get.offAll(
+      () => LoginScreen(),
+      transition: Transition.fadeIn,
+      duration: const Duration(milliseconds: 400),
+    );
   }
 
   @override
@@ -31,23 +44,42 @@ class OnboardingController extends GetxController {
   }
 }
 
-class OnboardingScreen extends StatelessWidget {
-  const OnboardingScreen({Key? key}) : super(key: key);
+class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({super.key});
+
+  @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  late final OnboardingController controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = Get.put(OnboardingController(), permanent: false);
+  }
+
+  @override
+  void dispose() {
+    if (Get.isRegistered<OnboardingController>()) {
+      Get.delete<OnboardingController>();
+    }
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(OnboardingController());
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
+            // Header
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24.0,
-                vertical: 16.0,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -59,10 +91,9 @@ class OnboardingScreen extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
+
                   TextButton(
-                    onPressed: () {
-                      Get.offAll(() => LoginScreen());
-                    },
+                    onPressed: controller.skipOnboarding,
                     child: Text(
                       'Lewati',
                       style: TextStyle(
@@ -76,6 +107,7 @@ class OnboardingScreen extends StatelessWidget {
               ),
             ),
 
+            // Halaman onboarding
             Expanded(
               child: PageView(
                 controller: controller.pageController,
@@ -96,13 +128,7 @@ class OnboardingScreen extends StatelessWidget {
                   ),
 
                   _buildOnboardingPage(
-                    illustration: const Center(
-                      child: Icon(
-                        Icons.rocket_launch,
-                        size: 100,
-                        color: PalleteColor.primaryPurple,
-                      ),
-                    ),
+                    illustration: _buildPage3Illustration(),
                     title: 'Mulai Sekarang',
                     description:
                         'Bergabunglah dan temukan pekerjaan yang sesuai dengan kemampuan kamu bersama Luang.In.',
@@ -111,7 +137,7 @@ class OnboardingScreen extends StatelessWidget {
               ),
             ),
 
-            // Indikator halaman
+            // Indicator
             Obx(
               () => Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -127,12 +153,9 @@ class OnboardingScreen extends StatelessWidget {
 
             const SizedBox(height: 32),
 
+            // Tombol
             Padding(
-              padding: const EdgeInsets.only(
-                left: 24.0,
-                right: 24.0,
-                bottom: 32.0,
-              ),
+              padding: const EdgeInsets.only(left: 24, right: 24, bottom: 32),
               child: SizedBox(
                 width: double.infinity,
                 height: 56,
@@ -140,16 +163,17 @@ class OnboardingScreen extends StatelessWidget {
                   onPressed: controller.nextPage,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: PalleteColor.primaryPurple,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    elevation: 0,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Obx(
-                        () => Text(
+                  child: Obx(
+                    () => Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
                           controller.currentPage.value == 2
                               ? 'Mulai Sekarang'
                               : 'Lanjut',
@@ -159,14 +183,14 @@ class OnboardingScreen extends StatelessWidget {
                             color: Colors.white,
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      const Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ],
+                        const SizedBox(width: 8),
+                        const Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -188,6 +212,7 @@ class OnboardingScreen extends StatelessWidget {
 
         Text(
           title,
+          textAlign: TextAlign.center,
           style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w800,
@@ -198,7 +223,7 @@ class OnboardingScreen extends StatelessWidget {
         const SizedBox(height: 16),
 
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+          padding: const EdgeInsets.symmetric(horizontal: 40),
           child: Text(
             description,
             textAlign: TextAlign.center,
@@ -216,10 +241,7 @@ class OnboardingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDot({
-    required int index,
-    required int currentPage,
-  }) {
+  Widget _buildDot({required int index, required int currentPage}) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       margin: const EdgeInsets.only(right: 6),
@@ -234,21 +256,24 @@ class OnboardingScreen extends StatelessWidget {
     );
   }
 
+  // Page 1
   Widget _buildPage1Illustration() {
     return Center(
       child: SizedBox(
-        width: 300,
-        height: 300,
+        width: 200,
+        height: 200,
         child: Lottie.asset(
           'assets/lottie/Search.json',
-          width: 150,
-          height: 150,
-          fit: BoxFit.fill,
+          width: 180,
+          height: 180,
+          fit: BoxFit.contain,
+          repeat: true,
         ),
       ),
     );
   }
 
+  // Page 2
   Widget _buildPage2Illustration() {
     return Center(
       child: SizedBox(
@@ -257,77 +282,146 @@ class OnboardingScreen extends StatelessWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
+            // Bulatan utama
             Container(
-              width: 260,
-              height: 260,
-              decoration: const BoxDecoration(
-                color: Color(0xFFF8F4FF),
+              width: 225,
+              height: 225,
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [const Color(0xFFF7F0FF), const Color(0xFFEDE1FF)],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: PalleteColor.primaryPurple.withOpacity(0.12),
+                    blurRadius: 30,
+                    spreadRadius: 5,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
               ),
             ),
 
-            const Icon(
-              Icons.smart_toy_rounded,
-              size: 110,
-              color: PalleteColor.primaryPurple,
+            // Bulatan kecil dekorasi
+            Positioned(
+              top: 25,
+              left: 30,
+              child: Container(
+                width: 14,
+                height: 14,
+                decoration: BoxDecoration(
+                  color: PalleteColor.primaryPurple.withOpacity(0.25),
+                  shape: BoxShape.circle,
+                ),
+              ),
             ),
 
             Positioned(
-              top: 65,
-              right: 65,
+              bottom: 45,
+              right: 25,
+              child: Container(
+                width: 9,
+                height: 9,
+                decoration: BoxDecoration(
+                  color: PalleteColor.primaryPurple.withOpacity(0.35),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+
+            // Chatbot
+            Lottie.asset(
+              'assets/lottie/chatbot.json',
+              width: 250,
+              height: 250,
+              fit: BoxFit.contain,
+              repeat: true,
+            ),
+
+            // Badge AI Online
+            Positioned(
+              top: 35,
+              right: 10,
               child: Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: PalleteColor.primaryPurple,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Text(
-                  'Tips tersedia',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ),
-
-            Positioned(
-              bottom: 30,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
+                  vertical: 7,
                 ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: PalleteColor.primaryPurple.withOpacity(0.08),
+                      color: Colors.black.withOpacity(0.08),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
                     ),
                   ],
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Icon(
-                      Icons.bolt,
-                      size: 16,
-                      color: Color(0xFFFF9800),
+                  children: [
+                    SizedBox(
+                      width: 7,
+                      height: 7,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Color(0xFF4CAF50),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
                     ),
-                    SizedBox(width: 6),
+                    SizedBox(width: 7),
                     Text(
-                      'Pencocokan AI 24/7',
+                      'AI Online',
                       style: TextStyle(
                         color: PalleteColor.primaryPurple,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Badge rekomendasi
+            Positioned(
+              bottom: 30,
+              left: 10,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 9,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 18,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.auto_awesome,
+                      size: 15,
+                      color: PalleteColor.primaryPurple,
+                    ),
+                    SizedBox(width: 7),
+                    Text(
+                      'Rekomendasi AI',
+                      style: TextStyle(
+                        color: PalleteColor.primaryPurple,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
@@ -336,6 +430,19 @@ class OnboardingScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // Page 3
+  Widget _buildPage3Illustration() {
+    return Center(
+      child: Lottie.asset(
+        'assets/lottie/roket.json',
+        width: 250,
+        height: 250,
+        fit: BoxFit.contain,
+        repeat: true,
       ),
     );
   }
