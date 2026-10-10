@@ -6,6 +6,7 @@ import 'package:luang_in/modules/riwayat/screens/riwayat_screen.dart';
 import '../controllers/main_controller.dart';
 import '../../../utils/pallete_color.dart';
 import '../../home/screens/home_screen.dart';
+import '../../profile/screens/profile_screen.dart';
 
 class MainScreen extends StatelessWidget {
   MainScreen({Key? key}) : super(key: key);
@@ -16,7 +17,7 @@ class MainScreen extends StatelessWidget {
     HomeScreen(),
     const Center(child: Text('AI Chat Screen')),
     const RiwayatScreen(),
-    const Center(child: Text('Profile Screen')),
+    const ProfileScreen(),
   ];
 
   static const List<_NavItem> _items = [

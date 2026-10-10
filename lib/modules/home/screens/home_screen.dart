@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:luang_in/modules/home/screens/detail_screen.dart';
 import '../../../utils/pallete_color.dart';
 
 class HomeController extends GetxController {
@@ -10,7 +11,7 @@ class HomeController extends GetxController {
     'Semua (18)',
     'Layanan F&B',
     'Upah Tinggi (Rp450rb+/hari)',
-    'Hari Ini'
+    'Hari Ini',
   ];
 
   final gigs = [
@@ -127,10 +128,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ],
               ),
-            ).animate().fade(duration: 400.ms).slideY(
-                  begin: -0.2,
-                  end: 0,
-                ),
+            ).animate().fade(duration: 400.ms).slideY(begin: -0.2, end: 0),
 
             SizedBox(
               height: 40,
@@ -181,10 +179,7 @@ class HomeScreen extends StatelessWidget {
                   });
                 },
               ),
-            ).animate().fade(duration: 400.ms).slideX(
-                  begin: 0.1,
-                  end: 0,
-                ),
+            ).animate().fade(duration: 400.ms).slideX(begin: 0.1, end: 0),
 
             const SizedBox(height: 16),
 
@@ -200,137 +195,146 @@ class HomeScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   var gig = controller.gigs[index];
 
-                  return Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: PalleteColor.white,
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: PalleteColor.borderColor,
-                        width: 0.5,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
+                  return GestureDetector(
+                    onTap: () {
+                      Get.to(
+                        () => const DetailScreen(),
+                        transition: Transition.rightToLeft,
+                        duration: const Duration(milliseconds: 350),
+                      );
+                    },
+                    child:
+                        Container(
+                              padding: const EdgeInsets.all(20),
                               decoration: BoxDecoration(
-                                color: gig['tagBg'] as Color,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                gig['tag'] as String,
-                                style: TextStyle(
-                                  color: gig['tagColor'] as Color,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600,
+                                color: PalleteColor.white,
+                                borderRadius: BorderRadius.circular(24),
+                                border: Border.all(
+                                  color: PalleteColor.borderColor,
+                                  width: 0.5,
                                 ),
-                              ),
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: gig['price'] as String,
-                                    style: const TextStyle(
-                                      color:
-                                          PalleteColor.primaryPurple,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: '\n${gig['unit']}',
-                                    style: const TextStyle(
-                                      color: PalleteColor.textGrey,
-                                      fontSize: 10,
-                                    ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.05),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 5),
                                   ),
                                 ],
                               ),
-                              textAlign: TextAlign.right,
-                            ),
-                          ],
-                        ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 6,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: gig['tagBg'] as Color,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          gig['tag'] as String,
+                                          style: TextStyle(
+                                            color: gig['tagColor'] as Color,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: gig['price'] as String,
+                                              style: const TextStyle(
+                                                color:
+                                                    PalleteColor.primaryPurple,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: '\n${gig['unit']}',
+                                              style: const TextStyle(
+                                                color: PalleteColor.textGrey,
+                                                fontSize: 10,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        textAlign: TextAlign.right,
+                                      ),
+                                    ],
+                                  ),
 
-                        const SizedBox(height: 8),
+                                  const SizedBox(height: 8),
 
-                        Text(
-                          gig['title'] as String,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: PalleteColor.textDark,
-                          ),
-                        ),
+                                  Text(
+                                    gig['title'] as String,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: PalleteColor.textDark,
+                                    ),
+                                  ),
 
-                        const SizedBox(height: 4),
+                                  const SizedBox(height: 4),
 
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.send_outlined,
-                              size: 12,
-                              color: PalleteColor.primaryPurple,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              '${gig['distance']} • ${gig['duration']}',
-                              style: const TextStyle(
-                                color: PalleteColor.textGrey,
-                                fontSize: 12,
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.send_outlined,
+                                        size: 12,
+                                        color: PalleteColor.primaryPurple,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        '${gig['distance']} • ${gig['duration']}',
+                                        style: const TextStyle(
+                                          color: PalleteColor.textGrey,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 24),
+
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        gig['time'] as String,
+                                        style: const TextStyle(
+                                          color: PalleteColor.textGrey,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                      const Text(
+                                        'Lihat Detail →',
+                                        style: TextStyle(
+                                          color: PalleteColor.primaryPurple,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 24),
-
-                        Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              gig['time'] as String,
-                              style: const TextStyle(
-                                color: PalleteColor.textGrey,
-                                fontSize: 12,
-                              ),
-                            ),
-                            const Text(
-                              'Lihat Detail →',
-                              style: TextStyle(
-                                color: PalleteColor.primaryPurple,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  )
-                      .animate(delay: (50 * index).ms)
-                      .fade(duration: 400.ms)
-                      .slideY(
-                        begin: 0.1,
-                        end: 0,
-                      );
+                            )
+                            .animate(delay: (50 * index).ms)
+                            .fade(duration: 400.ms)
+                            .slideY(begin: 0.1, end: 0),
+                  );
                 },
               ),
             ),

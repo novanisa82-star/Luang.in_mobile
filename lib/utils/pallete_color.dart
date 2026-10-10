@@ -12,6 +12,9 @@ class PalleteColor {
   static const Color borderColor = Color(0xFFE2E8F0); 
   static const Color white = Color(0xFFFFFFFF);
   static const Color googleRed = Color(0xFFEA4335); 
+  static const Color successColor = Color(0xFF159B70);
+  static const Color successBackground = Color(0xFFE9F8F1);
+  static const Color pageBackground = Color(0xFFF8FAFC);
 
   static const LinearGradient gradient = LinearGradient(
     colors: [
