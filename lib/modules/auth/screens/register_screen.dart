@@ -22,21 +22,15 @@ class RegisterScreen extends StatelessWidget {
             children: [
               // Logo Badge "LI"
               Container(
-                width: 44,
-                height: 44,
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF3E8FF),
-                  borderRadius: BorderRadius.circular(14),
+                  color: PalleteColor.lightPurple,
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Center(
-                  child: Text(
-                    'LI',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                      color: PalleteColor.primaryPurple,
-                    ),
-                  ),
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  width: 28,
+                  height: 28,
                 ),
               ),
 
@@ -86,9 +80,7 @@ class RegisterScreen extends StatelessWidget {
                       width: 20,
                       height: 20,
                       decoration: const BoxDecoration(shape: BoxShape.circle),
-                      child: CustomPaint(
-                        painter: _GoogleIconPainter(),
-                      ),
+                      child: CustomPaint(painter: _GoogleIconPainter()),
                     ),
                     const SizedBox(width: 10),
                     Text(
@@ -320,10 +312,7 @@ class RegisterScreen extends StatelessWidget {
                   child: Ink(
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFF9333EA),
-                          Color(0xFF7E22CE),
-                        ],
+                        colors: [Color(0xFF9333EA), Color(0xFF7E22CE)],
                       ),
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -362,7 +351,7 @@ class RegisterScreen extends StatelessWidget {
                         Get.off(() => LoginScreen());
                       },
                       child: Text(
-                        'Masuk',
+                        'Masuk sekarang',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 13,
                           fontWeight: FontWeight.w800,

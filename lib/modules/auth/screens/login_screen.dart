@@ -28,13 +28,10 @@ class LoginScreen extends StatelessWidget {
                           color: PalleteColor.lightPurple,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Text(
-                          'LI',
-                          style: TextStyle(
-                            color: PalleteColor.primaryPurple,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        child: Image.asset(
+                          'assets/images/logo.png',
+                          width: 28,
+                          height: 28,
                         ),
                       ),
 
@@ -181,7 +178,7 @@ class LoginScreen extends StatelessWidget {
                           GestureDetector(
                             onTap: () {},
                             child: const Text(
-                              'Lupa?',
+                              'Lupa password?',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -277,7 +274,7 @@ class LoginScreen extends StatelessWidget {
                           GestureDetector(
                             onTap: () => Get.to(() => RegisterScreen()),
                             child: const Text(
-                              'Daftar',
+                              'Daftar sekarang',
                               style: TextStyle(
                                 color: PalleteColor.primaryPurple,
                                 fontWeight: FontWeight.bold,

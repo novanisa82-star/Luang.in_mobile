@@ -1,15 +1,15 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:luang_in/modules/riwayat/screens/riwayat_screen.dart';
+import 'package:luang_in/modules/profile/screens/profile_screen.dart';
+import 'package:luang_in/utils/pallete_color.dart';
 import '../controllers/main_controller.dart';
-import '../../../utils/pallete_color.dart';
-import '../../home/screens/home_screen.dart';
-import '../../profile/screens/profile_screen.dart';
+import 'package:luang_in/modules/home/screens/home_screen.dart';
 
 class MainScreen extends StatelessWidget {
-  MainScreen({Key? key}) : super(key: key);
+  MainScreen({super.key});
 
   final MainController controller = Get.put(MainController());
 
@@ -20,122 +20,160 @@ class MainScreen extends StatelessWidget {
     const ProfileScreen(),
   ];
 
-  static const List<_NavItem> _items = [
-    _NavItem(Icons.explore_outlined, Icons.explore_rounded, 'Home'),
-    _NavItem(Icons.smart_toy_outlined, Icons.smart_toy_rounded, 'AI Chat'),
+  final List<_NavItem> items = const [
     _NavItem(
-      Icons.receipt_long_outlined,
-      Icons.receipt_long_rounded,
-      'History',
+      label: 'Home',
+      icon: Icons.home_outlined,
+      activeIcon: Icons.home_rounded,
     ),
-    _NavItem(Icons.person_outline_rounded, Icons.person_rounded, 'Profile'),
+    _NavItem(
+      label: 'AI Chat',
+      icon: Icons.auto_awesome_outlined,
+      activeIcon: Icons.auto_awesome_rounded,
+    ),
+    _NavItem(
+      label: 'Riwayat',
+      icon: Icons.receipt_long_outlined,
+      activeIcon: Icons.receipt_long_rounded,
+    ),
+    _NavItem(
+      label: 'Profil',
+      icon: Icons.person_outline_rounded,
+      activeIcon: Icons.person_rounded,
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: PalleteColor.white,
-      // Konten tampil sampai ke belakang navbar (efek floating + glass)
+      backgroundColor: PalleteColor.pageBackground,
       extendBody: true,
       body: Obx(
-        () => IndexedStack(
-          index: controller.selectedIndex.value,
-          children: screens,
+        () => AnimatedSwitcher(
+          duration: 450.ms,
+          switchInCurve: Curves.easeOutQuart,
+          switchOutCurve: Curves.easeInQuart,
+          transitionBuilder: (child, animation) {
+            final slideAnimation = Tween<Offset>(
+              begin: const Offset(0.025, 0),
+              end: Offset.zero,
+            ).animate(
+              CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOutQuart,
+              ),
+            );
+
+            return FadeTransition(
+              opacity: animation,
+              child: SlideTransition(
+                position: slideAnimation,
+                child: child,
+              ),
+            );
+          },
+          child: KeyedSubtree(
+            key: ValueKey(controller.selectedIndex.value),
+            child: screens[controller.selectedIndex.value],
+          ),
         ),
       ),
       bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(30),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-              child: Container(
-                height: 70,
-                decoration: BoxDecoration(
-                  // Kaca frosted modern: Putih semi-transparan
-                  color: Colors.white.withOpacity(0.82),
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(
-                    color: Colors.white.withOpacity(0.6),
-                    width: 1.5,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.06),
-                      blurRadius: 24,
-                      offset: const Offset(0, 8),
-                    ),
-                    BoxShadow(
-                      color: PalleteColor.primaryPurple.withOpacity(0.12),
-                      blurRadius: 32,
-                      offset: const Offset(0, 12),
-                    ),
-                  ],
-                ),
-                child: Obx(() {
-                  final selected = controller.selectedIndex.value;
-                  final n = _items.length;
-                  return Stack(
-                    children: [
-                      // Indikator sliding background (Kapsul aktif)
-                      AnimatedAlign(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeOutCubic,
-                        alignment: Alignment(
-                          n > 1 ? -1 + (2 * selected / (n - 1)) : 0,
-                          0,
-                        ),
-                        child: FractionallySizedBox(
-                          widthFactor: 1 / n,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 6,
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(24),
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xFF9F4BFF),
-                                    PalleteColor.primaryPurple,
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
+        top: false,
+        child: Container(
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8,
+            vertical: 8,
+          ),
+          decoration: BoxDecoration(
+            color: PalleteColor.white,
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(
+              color: PalleteColor.borderColor,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: PalleteColor.textDark.withOpacity(0.06),
+                blurRadius: 18,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Obx(
+            () => Row(
+              children: List.generate(items.length, (index) {
+                final isSelected =
+                    controller.selectedIndex.value == index;
+
+                return Expanded(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      if (!isSelected) {
+                        HapticFeedback.selectionClick();
+                        controller.changeTabIndex(index);
+                      }
+                    },
+                    child: AnimatedContainer(
+                      duration: 300.ms,
+                      curve: Curves.easeOutQuart,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? PalleteColor.lightPurple
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AnimatedSwitcher(
+                            duration: 250.ms,
+                            switchInCurve: Curves.easeOutBack,
+                            transitionBuilder: (child, animation) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: ScaleTransition(
+                                  scale: animation,
+                                  child: child,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: PalleteColor.primaryPurple
-                                        .withOpacity(0.4),
-                                    blurRadius: 12,
-                                    offset: const Offset(0, 4),
-                                  ),
-                                ],
-                              ),
+                              );
+                            },
+                            child: Icon(
+                              isSelected
+                                  ? items[index].activeIcon
+                                  : items[index].icon,
+                              key: ValueKey(isSelected),
+                              color: isSelected
+                                  ? PalleteColor.primaryPurple
+                                  : PalleteColor.textGrey,
+                              size: 23,
                             ),
                           ),
-                        ),
-                      ),
-                      // Row tombol ikon + label
-                      Row(
-                        children: List.generate(n, (index) {
-                          return Expanded(
-                            child: _NavButton(
-                              item: _items[index],
-                              isSelected: selected == index,
-                              onTap: () {
-                                HapticFeedback.selectionClick();
-                                controller.changeTabIndex(index);
-                              },
+                          const SizedBox(height: 4),
+                          AnimatedDefaultTextStyle(
+                            duration: 250.ms,
+                            curve: Curves.easeOutQuart,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: isSelected
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                              color: isSelected
+                                  ? PalleteColor.primaryPurple
+                                  : PalleteColor.textGrey,
                             ),
-                          );
-                        }),
+                            child: Text(items[index].label),
+                          ),
+                        ],
                       ),
-                    ],
-                  );
-                }),
-              ),
+                    ),
+                  ),
+                );
+              }),
             ),
           ),
         ),
@@ -145,57 +183,13 @@ class MainScreen extends StatelessWidget {
 }
 
 class _NavItem {
+  final String label;
   final IconData icon;
   final IconData activeIcon;
-  final String label;
 
-  const _NavItem(this.icon, this.activeIcon, this.label);
-}
-
-class _NavButton extends StatelessWidget {
-  final _NavItem item;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _NavButton({
-    required this.item,
-    required this.isSelected,
-    required this.onTap,
+  const _NavItem({
+    required this.label,
+    required this.icon,
+    required this.activeIcon,
   });
-
-  @override
-  Widget build(BuildContext context) {
-    final unselectedColor = Colors.grey.shade600;
-    const selectedColor = Colors.white;
-
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          AnimatedScale(
-            scale: isSelected ? 1.1 : 1.0,
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeOutBack,
-            child: Icon(
-              isSelected ? item.activeIcon : item.icon,
-              size: 22,
-              color: isSelected ? selectedColor : unselectedColor,
-            ),
-          ),
-          const SizedBox(height: 3),
-          AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 200),
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-              color: isSelected ? selectedColor : unselectedColor,
-            ),
-            child: Text(item.label),
-          ),
-        ],
-      ),
-    );
-  }
 }
