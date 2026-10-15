@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
-import 'package:luang_in/modules/auth/screens/login_screen.dart';
+import 'package:luang_in/core/services/storage_service.dart';
+import 'package:luang_in/data/providers/auth_provider.dart';
+import 'package:luang_in/modules/auth/bindings/auth_binding.dart';
 import 'package:luang_in/modules/profile/controllers/profile_controller.dart';
 import 'package:luang_in/utils/pallete_color.dart';
 
@@ -39,97 +41,102 @@ class ProfileScreen extends StatelessWidget {
               ),
               const SizedBox(height: 26),
               Obx(
-                    () => Container(
-                      padding: const EdgeInsets.all(17),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFFEDEBF2)),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 58,
-                            height: 58,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFEFE5FF),
-                              borderRadius: BorderRadius.circular(19),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              controller.initials,
-                              style: const TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.w800,
-                                color: PalleteColor.primaryPurple,
-                              ),
-                            ),
+                () =>
+                    Container(
+                          padding: const EdgeInsets.all(17),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: const Color(0xFFEDEBF2)),
                           ),
-                          const SizedBox(width: 14),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  controller.userName.value,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 58,
+                                height: 58,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFEFE5FF),
+                                  borderRadius: BorderRadius.circular(19),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  controller.initials,
                                   style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xFF29243A),
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.w800,
+                                    color: PalleteColor.primaryPurple,
                                   ),
                                 ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  controller.userEmail.value,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Color(0xFF898697),
-                                  ),
-                                ),
-                                const SizedBox(height: 9),
-                                const Row(
-                                  mainAxisSize: MainAxisSize.min,
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Icon(
-                                      Icons.verified_rounded,
-                                      size: 14,
-                                      color: Color(0xFF168B67),
-                                    ),
-                                    SizedBox(width: 5),
                                     Text(
-                                      'Akun terverifikasi',
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w600,
-                                        color: Color(0xFF168B67),
+                                      controller.userName.value,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                        color: Color(0xFF29243A),
                                       ),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      controller.userEmail.value,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xFF898697),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 9),
+                                    const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.verified_rounded,
+                                          size: 14,
+                                          color: Color(0xFF168B67),
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text(
+                                          'Akun terverifikasi',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xFF168B67),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                              ],
-                            ),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  _showComingSoon('Edit profil');
+                                },
+                                icon: const Icon(
+                                  Icons.edit_outlined,
+                                  size: 20,
+                                  color: Color(0xFF777387),
+                                ),
+                              ),
+                            ],
                           ),
-                          IconButton(
-                            onPressed: () {
-                              _showComingSoon('Edit profil');
-                            },
-                            icon: const Icon(
-                              Icons.edit_outlined,
-                              size: 20,
-                              color: Color(0xFF777387),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                  .animate()
-                  .fadeIn(duration: 350.ms)
-                  .slideY(begin: 0.06, end: 0, curve: Curves.easeOutCubic),
+                        )
+                        .animate()
+                        .fadeIn(duration: 350.ms)
+                        .slideY(
+                          begin: 0.06,
+                          end: 0,
+                          curve: Curves.easeOutCubic,
+                        ),
+              ),
               const SizedBox(height: 27),
               _sectionTitle('Akun'),
               const SizedBox(height: 10),
@@ -366,15 +373,29 @@ class ProfileScreen extends StatelessWidget {
         ),
         actions: [
           TextButton(
-            onPressed: Get.back,
+            onPressed: () => Get.back(),
             child: const Text(
               'Batal',
               style: TextStyle(color: Color(0xFF898697)),
             ),
           ),
           ElevatedButton(
-            onPressed: () {
-              Get.offAll(() => LoginScreen());
+            onPressed: () async {
+              Get.back();
+
+              try {
+                final storageService = Get.find<StorageService>();
+
+                await storageService.clearAuth();
+
+                Get.offAllNamed('/LoginScreen');
+              } catch (e) {
+                Get.snackbar(
+                  'Gagal Logout',
+                  e.toString().replaceFirst('Exception: ', ''),
+                  snackPosition: SnackPosition.TOP,
+                );
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFD94A60),

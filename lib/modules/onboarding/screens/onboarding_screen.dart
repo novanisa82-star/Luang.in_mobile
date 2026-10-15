@@ -21,20 +21,12 @@ class OnboardingController extends GetxController {
         curve: Curves.easeInOut,
       );
     } else {
-      Get.offAll(
-        () => LoginScreen(),
-        transition: Transition.fadeIn,
-        duration: const Duration(milliseconds: 400),
-      );
+      Get.toNamed('/LoginScreen');
     }
   }
 
   void skipOnboarding() {
-    Get.offAll(
-      () => LoginScreen(),
-      transition: Transition.fadeIn,
-      duration: const Duration(milliseconds: 400),
-    );
+    Get.toNamed('/LoginScreen');
   }
 
   @override

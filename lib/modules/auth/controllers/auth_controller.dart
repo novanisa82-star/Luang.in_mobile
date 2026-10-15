@@ -1,76 +1,144 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:luang_in/modules/main/screens/main_screen.dart';
-import 'package:luang_in/modules/onboarding/screens/skill_profile_screen.dart';
+import '../../../data/providers/auth_provider.dart';
 
 class AuthController extends GetxController {
-  // Login Controllers
+  final AuthProvider authProvider;
+
+  AuthController(this.authProvider);
+
+  final isLoading = false.obs;
+  final obscurePassword = true.obs;
+  final obscureConfirmPassword = true.obs;
+
+  final nameController = TextEditingController();
   final loginEmailController = TextEditingController();
   final loginPasswordController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  final whatsappController = TextEditingController();
+  final domisiliController = TextEditingController();
 
-  // Register Controllers
-  final regNameController = TextEditingController();
-  final regEmailController = TextEditingController();
-  final regPasswordController = TextEditingController();
-
-  final isAgreeTerms = false.obs; 
-
-  void toggleTerms(bool? value) {
-    isAgreeTerms.value = value ?? false;
+  bool _isValidEmail(String email) {
+    return RegExp(
+      r'^[\w.!#$%&’*+/=?^`{|}~-]+@[\w-]+(\.[\w-]+)+$',
+    ).hasMatch(email);
   }
 
-  void login() {
-    Get.offAll(() => MainScreen());
-    
-    Get.snackbar(
-      'Login Berhasil',
-      'Masuk dengan email: ${loginEmailController.text}',
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: Colors.green.withOpacity(0.1),
-      colorText: Colors.green,
-    );
-  }
+  Future<void> login() async {
+    final email = loginEmailController.text.trim();
+    final password = loginPasswordController.text;
 
-  void register() {
-    if (!isAgreeTerms.value) {
-      Get.snackbar(
-        'Peringatan',
-        'Anda harus menyetujui Syarat dan Ketentuan.',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+    if (email.isEmpty || password.isEmpty) {
+      _showMessage('Email dan password wajib diisi.');
       return;
     }
-    
-    Get.off(() => SkillProfileScreen());
-    
-    Get.snackbar(
-      'Registrasi',
-      'Pendaftaran berhasil untuk: ${regNameController.text}',
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: Colors.green.withOpacity(0.1),
-      colorText: Colors.green,
-    );
+
+    if (!_isValidEmail(email)) {
+      _showMessage('Format email tidak benar.');
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+
+      await authProvider.login(email: email, password: password);
+
+      Get.offAllNamed('/main');
+    } catch (e) {
+      _showMessage(_errorMessage(e));
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  void loginWithGoogle() {
-    Get.offAll(() => MainScreen());
-    
+  Future<void> register() async {
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+    final confirmPassword = confirmPasswordController.text;
+
+    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+      _showMessage('Nama, email, dan password wajib diisi.');
+      return;
+    }
+
+    if (!_isValidEmail(email)) {
+      _showMessage('Format email tidak benar.');
+      return;
+    }
+
+    if (password != confirmPassword) {
+      _showMessage('Konfirmasi password tidak sama.');
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+
+      await authProvider.register(
+        name: name,
+        email: email,
+        password: password,
+        passwordConfirmation: confirmPassword,
+        whatsapp: whatsappController.text.trim().isEmpty
+            ? null
+            : whatsappController.text.trim(),
+        domisili: domisiliController.text.trim().isEmpty
+            ? null
+            : domisiliController.text.trim(),
+      );
+
+      Get.offAllNamed('/main');
+    } catch (e) {
+      _showMessage(_errorMessage(e));
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void togglePassword() {
+    obscurePassword.toggle();
+  }
+
+  void toggleConfirmPassword() {
+    obscureConfirmPassword.toggle();
+  }
+
+  Future<void> loginWithGoogle() async {
+    _showMessage('Login Google belum dihubungkan ke autentikasi.');
+  }
+
+  String _errorMessage(Object error) {
+    final message = error.toString().replaceFirst('Exception: ', '');
+
+    if (message.contains('email') &&
+        (message.contains('valid') || message.contains('format'))) {
+      return 'Format email tidak benar.';
+    }
+
+    return message;
+  }
+
+  void _showMessage(String message) {
     Get.snackbar(
-      'Google SSO',
-      'Masuk dengan Akun Google...',
+      'Informasi',
+      message,
       snackPosition: SnackPosition.TOP,
     );
   }
 
   @override
   void onClose() {
+    nameController.dispose();
     loginEmailController.dispose();
     loginPasswordController.dispose();
-    regNameController.dispose();
-    regEmailController.dispose();
-    regPasswordController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    whatsappController.dispose();
+    domisiliController.dispose();
     super.onClose();
   }
 }

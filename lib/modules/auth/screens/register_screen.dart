@@ -11,6 +11,7 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<AuthController>();
+    final isAgreeTerms = false.obs;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -20,7 +21,6 @@ class RegisterScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Logo Badge "LI"
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
@@ -33,10 +33,7 @@ class RegisterScreen extends StatelessWidget {
                   height: 28,
                 ),
               ),
-
               const SizedBox(height: 28),
-
-              // Judul
               Text(
                 'Buat Akun',
                 style: GoogleFonts.plusJakartaSans(
@@ -46,10 +43,7 @@ class RegisterScreen extends StatelessWidget {
                   letterSpacing: -0.5,
                 ),
               ),
-
               const SizedBox(height: 6),
-
-              // Subjudul
               Text(
                 'Mulai mencari atau membuka pekerjaan dalam hitungan menit.',
                 style: GoogleFonts.plusJakartaSans(
@@ -58,16 +52,16 @@ class RegisterScreen extends StatelessWidget {
                   color: const Color(0xFF6B7280),
                 ),
               ),
-
               const SizedBox(height: 28),
-
-              // Tombol Daftar dengan Google
               OutlinedButton(
                 onPressed: controller.loginWithGoogle,
                 style: OutlinedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 52),
                   backgroundColor: Colors.white,
-                  side: const BorderSide(color: Color(0xFFE5E7EB), width: 1.2),
+                  side: const BorderSide(
+                    color: Color(0xFFE5E7EB),
+                    width: 1.2,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),
@@ -79,8 +73,12 @@ class RegisterScreen extends StatelessWidget {
                     Container(
                       width: 20,
                       height: 20,
-                      decoration: const BoxDecoration(shape: BoxShape.circle),
-                      child: CustomPaint(painter: _GoogleIconPainter()),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: CustomPaint(
+                        painter: _GoogleIconPainter(),
+                      ),
                     ),
                     const SizedBox(width: 10),
                     Text(
@@ -94,14 +92,14 @@ class RegisterScreen extends StatelessWidget {
                   ],
                 ),
               ),
-
               const SizedBox(height: 24),
-
-              // Pemisah "ATAU DAFTAR MANUAL"
               Row(
                 children: [
                   const Expanded(
-                    child: Divider(color: Color(0xFFE5E7EB), thickness: 1),
+                    child: Divider(
+                      color: Color(0xFFE5E7EB),
+                      thickness: 1,
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -116,14 +114,14 @@ class RegisterScreen extends StatelessWidget {
                     ),
                   ),
                   const Expanded(
-                    child: Divider(color: Color(0xFFE5E7EB), thickness: 1),
+                    child: Divider(
+                      color: Color(0xFFE5E7EB),
+                      thickness: 1,
+                    ),
                   ),
                 ],
               ),
-
               const SizedBox(height: 24),
-
-              // Field 1: Nama Lengkap
               Text(
                 'Nama Lengkap',
                 style: GoogleFonts.plusJakartaSans(
@@ -134,7 +132,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               TextField(
-                controller: controller.regNameController,
+                controller: controller.nameController,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -154,7 +152,9 @@ class RegisterScreen extends StatelessWidget {
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Color(0xFFF3F4F6)),
+                    borderSide: const BorderSide(
+                      color: Color(0xFFF3F4F6),
+                    ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
@@ -165,10 +165,7 @@ class RegisterScreen extends StatelessWidget {
                   ),
                 ),
               ),
-
               const SizedBox(height: 18),
-
-              // Field 2: Email
               Text(
                 'Email',
                 style: GoogleFonts.plusJakartaSans(
@@ -179,7 +176,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               TextField(
-                controller: controller.regEmailController,
+                controller: controller.emailController,
                 keyboardType: TextInputType.emailAddress,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 14,
@@ -200,7 +197,9 @@ class RegisterScreen extends StatelessWidget {
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Color(0xFFF3F4F6)),
+                    borderSide: const BorderSide(
+                      color: Color(0xFFF3F4F6),
+                    ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
@@ -211,10 +210,7 @@ class RegisterScreen extends StatelessWidget {
                   ),
                 ),
               ),
-
               const SizedBox(height: 18),
-
-              // Field 3: Kata Sandi
               Text(
                 'Kata Sandi',
                 style: GoogleFonts.plusJakartaSans(
@@ -224,43 +220,53 @@ class RegisterScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              TextField(
-                controller: controller.regPasswordController,
-                obscureText: true,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF111827),
-                ),
-                decoration: InputDecoration(
-                  hintText: 'Buat kata sandi yang kuat',
-                  hintStyle: GoogleFonts.plusJakartaSans(
+              Obx(
+                () => TextField(
+                  controller: controller.passwordController,
+                  obscureText: controller.obscurePassword.value,
+                  style: GoogleFonts.plusJakartaSans(
                     fontSize: 14,
-                    color: const Color(0xFF9CA3AF),
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF111827),
                   ),
-                  filled: true,
-                  fillColor: const Color(0xFFF9FAFB),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: Color(0xFFF3F4F6)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(
-                      color: PalleteColor.primaryPurple,
-                      width: 1.5,
+                  decoration: InputDecoration(
+                    hintText: 'Buat kata sandi yang kuat',
+                    hintStyle: GoogleFonts.plusJakartaSans(
+                      fontSize: 14,
+                      color: const Color(0xFF9CA3AF),
+                    ),
+                    filled: true,
+                    fillColor: const Color(0xFFF9FAFB),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                    suffixIcon: IconButton(
+                      onPressed: controller.togglePassword,
+                      icon: Icon(
+                        controller.obscurePassword.value
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: const Color(0xFF9CA3AF),
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(
+                        color: Color(0xFFF3F4F6),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(
+                        color: PalleteColor.primaryPurple,
+                        width: 1.5,
+                      ),
                     ),
                   ),
                 ),
               ),
-
               const SizedBox(height: 16),
-
-              // Checkbox Syarat Layanan
               Obx(
                 () => Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -269,8 +275,10 @@ class RegisterScreen extends StatelessWidget {
                       width: 24,
                       height: 24,
                       child: Checkbox(
-                        value: controller.isAgreeTerms.value,
-                        onChanged: controller.toggleTerms,
+                        value: isAgreeTerms.value,
+                        onChanged: (value) {
+                          isAgreeTerms.value = value ?? false;
+                        },
                         activeColor: PalleteColor.primaryPurple,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4),
@@ -280,7 +288,7 @@ class RegisterScreen extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        "Saya menyetujui Syarat dan Ketentuan serta Kebijakan Privasi Luang.In.",
+                        'Saya menyetujui Syarat dan Ketentuan serta Kebijakan Privasi Luang.In.',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
@@ -292,48 +300,73 @@ class RegisterScreen extends StatelessWidget {
                   ],
                 ),
               ),
-
               const SizedBox(height: 28),
-
-              // Tombol Buat Akun
               SizedBox(
                 width: double.infinity,
                 height: 52,
-                child: ElevatedButton(
-                  onPressed: controller.register,
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    elevation: 3,
-                    shadowColor: PalleteColor.primaryPurple.withOpacity(0.3),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF9333EA), Color(0xFF7E22CE)],
+                child: Obx(
+                  () => ElevatedButton(
+                    onPressed: controller.isLoading.value
+                        ? null
+                        : () {
+                            if (!isAgreeTerms.value) {
+                              Get.snackbar(
+                                'Informasi',
+                                'Silakan setujui syarat dan ketentuan terlebih dahulu.',
+                                snackPosition: SnackPosition.TOP,
+                              );
+                              return;
+                            }
+
+                            controller.confirmPasswordController.text =
+                                controller.passwordController.text;
+
+                            controller.register();
+                          },
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      elevation: 3,
+                      shadowColor:
+                          PalleteColor.primaryPurple.withOpacity(0.3),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      borderRadius: BorderRadius.circular(16),
                     ),
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Buat Akun',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF9333EA),
+                            Color(0xFF7E22CE),
+                          ],
                         ),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: controller.isLoading.value
+                            ? const SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                'Buat Akun',
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
+                              ),
                       ),
                     ),
                   ),
                 ),
               ),
-
               const SizedBox(height: 32),
-
-              // Link Bawah: Masuk
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -413,8 +446,19 @@ class _GoogleIconPainter extends CustomPainter {
       greenPaint,
     );
 
-    canvas.drawCircle(center, radius * 0.55, Paint()..color = Colors.white);
-    final Rect barRect = Rect.fromLTWH(w * 0.45, h * 0.4, w * 0.55, h * 0.22);
+    canvas.drawCircle(
+      center,
+      radius * 0.55,
+      Paint()..color = Colors.white,
+    );
+
+    final Rect barRect = Rect.fromLTWH(
+      w * 0.45,
+      h * 0.4,
+      w * 0.55,
+      h * 0.22,
+    );
+
     canvas.drawRect(barRect, bluePaint);
   }
 
