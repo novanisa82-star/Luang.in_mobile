@@ -68,7 +68,7 @@ class AuthProvider {
 
   Future<void> logout() async {
     try {
-      await apiService.postAuthenticated(ApiConfig.logout);
+      await apiService.postAuthenticated(ApiConfig.logout, data: {});
     } finally {
       await storageService.clearAuth();
     }

@@ -47,7 +47,7 @@ class AuthController extends GetxController {
 
       Get.offAllNamed('/main');
     } catch (e) {
-      _showMessage(_errorMessage(e));
+      _showMessage('Login gagal. Periksa email dan password kamu.');
     } finally {
       isLoading.value = false;
     }
@@ -69,34 +69,27 @@ class AuthController extends GetxController {
       return;
     }
 
+    if (password.length < 8) {
+      _showMessage('Password minimal 8 karakter.');
+      return;
+    }
+
     if (password != confirmPassword) {
       _showMessage('Konfirmasi password tidak sama.');
       return;
     }
 
-    try {
-      isLoading.value = true;
-
-      await authProvider.register(
-        name: name,
-        email: email,
-        password: password,
-        passwordConfirmation: confirmPassword,
-        whatsapp: whatsappController.text.trim().isEmpty
-            ? null
-            : whatsappController.text.trim(),
-        domisili: domisiliController.text.trim().isEmpty
-            ? null
-            : domisiliController.text.trim(),
-      );
-
-      Get.offAllNamed('/main');
-    } catch (e) {
-      _showMessage(_errorMessage(e));
-    } finally {
-      isLoading.value = false;
-    }
+    Get.toNamed(
+      '/skill-profile',
+      arguments: {
+        'name': name,
+        'email': email,
+        'password': password,
+        'password_confirmation': confirmPassword,
+      },
+    );
   }
+
 
   void togglePassword() {
     obscurePassword.toggle();
@@ -110,23 +103,8 @@ class AuthController extends GetxController {
     _showMessage('Login Google belum dihubungkan ke autentikasi.');
   }
 
-  String _errorMessage(Object error) {
-    final message = error.toString().replaceFirst('Exception: ', '');
-
-    if (message.contains('email') &&
-        (message.contains('valid') || message.contains('format'))) {
-      return 'Format email tidak benar.';
-    }
-
-    return message;
-  }
-
   void _showMessage(String message) {
-    Get.snackbar(
-      'Informasi',
-      message,
-      snackPosition: SnackPosition.TOP,
-    );
+    Get.snackbar('Informasi', message, snackPosition: SnackPosition.TOP);
   }
 
   @override
@@ -139,6 +117,7 @@ class AuthController extends GetxController {
     confirmPasswordController.dispose();
     whatsappController.dispose();
     domisiliController.dispose();
+
     super.onClose();
   }
 }

@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 
 import 'package:get/get.dart';
@@ -41,10 +42,14 @@ class ApiService extends GetxService {
     return _handleResponse(response);
   }
 
-  Future<Map<String, dynamic>> postAuthenticated(String url) async {
+  Future<Map<String, dynamic>> postAuthenticated(
+    String url, {
+    required Map<String, dynamic> data,
+  }) async {
     final response = await http.post(
       Uri.parse(url),
       headers: await _headers(authenticated: true),
+      body: jsonEncode(data),
     );
 
     return _handleResponse(response);
@@ -62,9 +67,7 @@ class ApiService extends GetxService {
       final token = storageService.getToken();
 
       if (token == null || token.isEmpty) {
-        throw Exception(
-          'Sesi login tidak ditemukan. Silakan login kembali.',
-        );
+        throw Exception('Sesi login tidak ditemukan. Silakan login kembali.');
       }
 
       headers['Authorization'] = 'Bearer $token';
