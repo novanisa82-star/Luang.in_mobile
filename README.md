@@ -6,13 +6,15 @@ Aplikasi ini dikembangkan menggunakan Flutter dan terhubung dengan backend Larav
 
 ## ✨ Fitur Utama
 
-- **Login dan Registrasi** — Mengakses akun dan membuat akun pelamar.
-- **Profil Keterampilan** — Melengkapi informasi diri, keterampilan, dan pengalaman kerja.
+- **Autentikasi Pengguna** — Registrasi dan login akun pelamar.
 - **Beranda Lowongan** — Menjelajahi informasi pekerjaan yang tersedia.
-- **Pencarian dan Filter** — Membantu menemukan lowongan sesuai kebutuhan.
+- **Pencarian dan Filter** — Menemukan lowongan berdasarkan kebutuhan pengguna.
 - **Detail Lowongan** — Melihat informasi pekerjaan sebelum melamar.
-- **Riwayat Lamaran** — Memantau status lamaran pekerjaan.
+- **Profil Keterampilan** — Melengkapi keterampilan dan pengalaman pelamar.
+- **Riwayat Lamaran** — Memantau perkembangan status lamaran pekerjaan.
+- **AI Chatbot** — Membantu pengguna memperoleh informasi dan panduan seputar pencarian kerja melalui percakapan dengan AI.
 - **Profil Pengguna** — Melihat dan mengelola informasi akun.
+
 
 *Fitur yang ditampilkan mengikuti tahap pengembangan dan integrasi backend.*
 
