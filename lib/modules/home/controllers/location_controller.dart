@@ -1,12 +1,9 @@
-
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 class LocationController extends GetxController {
-  final Geocoding geocoding = Geocoding();
-
-  final locationName = 'Mendeteksi lokasi...'.obs;
+  final locationName = 'Meminta izin lokasi...'.obs;
   final isLoading = false.obs;
 
   @override
@@ -18,13 +15,9 @@ class LocationController extends GetxController {
   Future<void> getCurrentLocation() async {
     try {
       isLoading.value = true;
-      locationName.value = 'Mendeteksi lokasi...';
 
-      final serviceEnabled =
-          await Geolocator.isLocationServiceEnabled();
-
-      if (!serviceEnabled) {
-        locationName.value = 'GPS belum aktif';
+      if (!await Geolocator.isLocationServiceEnabled()) {
+        locationName.value = 'Aktifkan layanan lokasi';
         return;
       }
 
@@ -36,33 +29,24 @@ class LocationController extends GetxController {
 
       if (permission == LocationPermission.denied ||
           permission == LocationPermission.deniedForever) {
-        locationName.value = 'Izin lokasi belum diberikan';
+        locationName.value = 'Izin lokasi ditolak';
         return;
       }
 
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.medium,
-          timeLimit: Duration(seconds: 20),
-        ),
-      );
+      final position = await Geolocator.getCurrentPosition();
 
-      final places = await geocoding.placemarkFromCoordinates(
+      final places = await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
       );
 
       if (places.isNotEmpty) {
         final place = places.first;
-
         locationName.value =
-            place.subAdministrativeArea?.isNotEmpty == true
-                ? place.subAdministrativeArea!
-                : place.locality?.isNotEmpty == true
-                    ? place.locality!
-                    : place.administrativeArea?.isNotEmpty == true
-                        ? place.administrativeArea!
-                        : 'Lokasi ditemukan';
+            place.subAdministrativeArea ??
+            place.locality ??
+            place.administrativeArea ??
+            'Lokasi ditemukan';
       } else {
         locationName.value = 'Lokasi ditemukan';
       }
