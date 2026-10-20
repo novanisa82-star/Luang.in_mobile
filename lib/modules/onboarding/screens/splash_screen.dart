@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:luang_in/core/services/storage_service.dart';
 import 'package:luang_in/modules/onboarding/screens/onboarding_screen.dart';
+import 'package:luang_in/modules/main/screens/main_screen.dart';
 import 'package:luang_in/utils/pallete_color.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,16 +16,29 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    _checkLogin();
+  }
 
-    Future.delayed(const Duration(seconds: 2), () {
-      if (!mounted) return;
+  Future<void> _checkLogin() async {
+    await Future.delayed(const Duration(seconds: 3));
 
+    if (!mounted) return;
+
+    final storage = Get.find<StorageService>();
+
+    if (storage.isLoggedIn) {
+      Get.offAll(
+        () => MainScreen(),
+        transition: Transition.fadeIn,
+        duration: const Duration(milliseconds: 500),
+      );
+    } else {
       Get.offAll(
         () => const OnboardingScreen(),
         transition: Transition.fadeIn,
         duration: const Duration(milliseconds: 500),
       );
-    });
+    }
   }
 
   @override
@@ -32,10 +46,11 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Container(
         width: double.infinity,
-        decoration: BoxDecoration(gradient: PalleteColor.gradient),
+        decoration: BoxDecoration(
+          gradient: PalleteColor.gradient,
+        ),
         child: Stack(
           children: [
-            // Lingkaran kanan atas
             Positioned(
               top: -80,
               right: -80,
@@ -51,8 +66,6 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
             ),
-
-            // Lingkaran kiri bawah
             Positioned(
               bottom: 100,
               left: -150,
@@ -68,14 +81,11 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
             ),
-
             SafeArea(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Spacer(flex: 3),
-
-                  // Logo
                   Container(
                     width: 110,
                     height: 110,
@@ -99,10 +109,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 24),
-
-                  // Nama aplikasi
                   const Text(
                     'Luang.In',
                     style: TextStyle(
@@ -112,10 +119,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       letterSpacing: -1.0,
                     ),
                   ),
-
                   const SizedBox(height: 8),
-
-                  // Slogan
                   const Text(
                     'KERJA CEPAT. PELUANG DEKAT.',
                     style: TextStyle(
@@ -125,10 +129,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       letterSpacing: 1.5,
                     ),
                   ),
-
                   const Spacer(flex: 2),
-
-                  // Loading
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -150,10 +151,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       ),
                     ],
                   ),
-
                   const Spacer(flex: 1),
-
-                  // Versi
                   Padding(
                     padding: const EdgeInsets.only(bottom: 24),
                     child: Text(

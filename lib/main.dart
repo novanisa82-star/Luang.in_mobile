@@ -11,12 +11,15 @@ import 'package:luang_in/modules/onboarding/screens/onboarding_screen.dart';
 import 'package:luang_in/modules/onboarding/screens/skill_profile_screen.dart';
 import 'package:luang_in/modules/onboarding/screens/splash_screen.dart';
 import 'package:luang_in/utils/pallete_color.dart';
+import 'package:luang_in/core/services/api_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
 
   Get.put<StorageService>(StorageService(), permanent: true);
+
+  Get.put<ApiService>(ApiService(Get.find<StorageService>()), permanent: true);
 
   runApp(const MyApp());
 }

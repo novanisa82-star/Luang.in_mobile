@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -5,10 +6,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../controllers/home_controller.dart';
 import 'detail_screen.dart';
 import '../../../utils/pallete_color.dart';
+import '../controllers/location_controller.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
 
+  final LocationController locationController = Get.put(LocationController());
   final HomeController controller = Get.put(HomeController());
 
   Color get purple => PalleteColor.primaryPurple;
@@ -79,59 +82,55 @@ class HomeScreen extends StatelessWidget {
       builder: (sheetContext) {
         return StatefulBuilder(
           builder: (context, setModalState) {
-            return Container(
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height * 0.88,
-              ),
-              decoration: const BoxDecoration(
-                color: pageColor,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 12),
-                  Container(
-                    width: 42,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFDAD5E4),
-                      borderRadius: BorderRadius.circular(20),
+            return SafeArea(
+              child: Container(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.88,
+                ),
+                decoration: const BoxDecoration(
+                  color: pageColor,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 12),
+                    Container(
+                      width: 42,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFDAD5E4),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(22, 20, 16, 16),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Filter pekerjaan',
-                                style: TextStyle(
-                                  color: darkColor,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: -0.5,
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(22, 20, 16, 16),
+                      child: Row(
+                        children: [
+                          const Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Filter pekerjaan',
+                                  style: TextStyle(
+                                    color: darkColor,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w800,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                'Temukan pekerjaan yang sesuai untukmu.',
-                                style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontSize: 12,
+                                SizedBox(height: 5),
+                                Text(
+                                  'Temukan pekerjaan yang sesuai untukmu.',
+                                  style: TextStyle(
+                                    color: mutedColor,
+                                    fontSize: 12,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        Material(
-                          color: const Color(0xFFEDE5FC),
-                          borderRadius: BorderRadius.circular(14),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(14),
-                            onTap: () {
+                          IconButton(
+                            onPressed: () {
                               setModalState(() {
                                 minWage = 0;
                                 rating = 0;
@@ -139,245 +138,151 @@ class HomeScreen extends StatelessWidget {
                                 jobTitleController.clear();
                               });
                             },
-                            child: Padding(
-                              padding: const EdgeInsets.all(12),
-                              child: Icon(
-                                Icons.restart_alt_rounded,
-                                color: purple,
-                                size: 22,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Divider(height: 1, color: borderColor),
-
-                  Expanded(
-                    child: ListView(
-                      padding: const EdgeInsets.fromLTRB(22, 22, 22, 24),
-                      children: [
-                        _filterHeading('Nama pekerjaan'),
-                        const SizedBox(height: 10),
-                        TextField(
-                          controller: jobTitleController,
-                          textInputAction: TextInputAction.search,
-                          decoration: InputDecoration(
-                            hintText: 'Contoh: Barista, kasir...',
-                            hintStyle: const TextStyle(
-                              color: Color(0xFFA7A1B4),
-                              fontSize: 13,
-                            ),
-                            prefixIcon: Icon(
-                              Icons.search_rounded,
+                            icon: Icon(
+                              Icons.restart_alt_rounded,
                               color: purple,
                             ),
-                            filled: true,
-                            fillColor: Colors.white,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 15,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: const BorderSide(color: borderColor),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(16),
-                              borderSide: BorderSide(color: purple, width: 1.4),
-                            ),
                           ),
-                        ),
-
-                        const SizedBox(height: 26),
-                        _filterHeading('Minimal upah'),
-                        const SizedBox(height: 8),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Upah minimum',
-                              style: TextStyle(
-                                color: Colors.grey.shade600,
-                                fontSize: 12,
-                              ),
-                            ),
-                            Text(
-                              minWage == 0
-                                  ? 'Semua upah'
-                                  : '${_rupiah(minWage)}+',
-                              style: TextStyle(
+                        ],
+                      ),
+                    ),
+                    const Divider(height: 1, color: borderColor),
+                    Expanded(
+                      child: ListView(
+                        padding: const EdgeInsets.fromLTRB(22, 22, 22, 24),
+                        children: [
+                          _filterHeading('Nama pekerjaan'),
+                          const SizedBox(height: 10),
+                          TextField(
+                            controller: jobTitleController,
+                            textInputAction: TextInputAction.search,
+                            decoration: InputDecoration(
+                              hintText: 'Contoh: Barista, kasir...',
+                              prefixIcon: Icon(
+                                Icons.search_rounded,
                                 color: purple,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 13,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(
+                                  color: borderColor,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide(
+                                  color: purple,
+                                  width: 1.4,
+                                ),
                               ),
                             ),
-                          ],
-                        ),
-                        SliderTheme(
-                          data: SliderTheme.of(context).copyWith(
-                            activeTrackColor: purple,
-                            inactiveTrackColor: const Color(0xFFE7DFF6),
-                            thumbColor: Colors.white,
-                            overlayColor: purple.withOpacity(0.12),
-                            trackHeight: 5,
-                            thumbShape: const RoundSliderThumbShape(
-                              enabledThumbRadius: 9,
-                              elevation: 2,
+                          ),
+                          const SizedBox(height: 26),
+                          _filterHeading('Minimal upah'),
+                          const SizedBox(height: 8),
+                          Text(
+                            minWage == 0
+                                ? 'Semua upah'
+                                : '${_rupiah(minWage)}+',
+                            style: TextStyle(
+                              color: purple,
+                              fontWeight: FontWeight.w800,
                             ),
                           ),
-                          child: Slider(
+                          Slider(
                             value: minWage,
                             min: 0,
                             max: 1000000000,
                             divisions: 100,
+                            activeColor: purple,
                             onChanged: (value) {
                               setModalState(() => minWage = value);
                             },
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Rp0',
-                              style: TextStyle(
-                                color: Colors.grey.shade500,
-                                fontSize: 10,
-                              ),
-                            ),
-                            Text(
-                              'Rp1.000.000.000',
-                              style: TextStyle(
-                                color: Colors.grey.shade500,
-                                fontSize: 10,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 26),
-                        _filterHeading('Rating minimum'),
-                        const SizedBox(height: 12),
-                        Wrap(
-                          spacing: 9,
-                          runSpacing: 9,
-                          children: [0.0, 3.0, 4.0, 5.0].map((value) {
-                            final selected = rating == value;
-
-                            return _choiceChip(
-                              label: value == 0
-                                  ? 'Semua rating'
-                                  : '${value.toInt()}+ ★',
-                              selected: selected,
-                              onTap: () {
-                                setModalState(() => rating = value);
-                              },
-                            );
-                          }).toList(),
-                        ),
-
-                        const SizedBox(height: 26),
-                        _filterHeading('Jenis pekerjaan'),
-                        const SizedBox(height: 12),
-                        Wrap(
-                          spacing: 9,
-                          runSpacing: 9,
-                          children: ['Semua', 'Daily', 'Shift'].map((value) {
-                            return _choiceChip(
-                              label: value,
-                              selected: type == value,
-                              onTap: () {
-                                setModalState(() => type = value);
-                              },
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  Container(
-                    padding: EdgeInsets.fromLTRB(
-                      22,
-                      15,
-                      22,
-                      MediaQuery.of(context).viewInsets.bottom + 18,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: const Border(top: BorderSide(color: borderColor)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.025),
-                          blurRadius: 12,
-                          offset: const Offset(0, -4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: OutlinedButton(
-                            onPressed: () {
-                              controller.resetFilter();
-                              Navigator.pop(sheetContext);
-                            },
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: darkColor,
-                              side: const BorderSide(color: borderColor),
-                              minimumSize: const Size(0, 52),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                            child: const Text(
-                              'Reset',
-                              style: TextStyle(fontWeight: FontWeight.w700),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          flex: 3,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              controller.applyFilter(
-                                minWage: minWage,
-                                rating: rating,
-                                type: type,
-                                jobTitle: jobTitleController.text,
+                          const SizedBox(height: 20),
+                          _filterHeading('Rating minimum'),
+                          const SizedBox(height: 12),
+                          Wrap(
+                            spacing: 9,
+                            children: [0.0, 3.0, 4.0, 5.0].map((value) {
+                              return _choiceChip(
+                                label: value == 0
+                                    ? 'Semua rating'
+                                    : '${value.toInt()}+ ★',
+                                selected: rating == value,
+                                onTap: () {
+                                  setModalState(() => rating = value);
+                                },
                               );
-                              Navigator.pop(sheetContext);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: purple,
-                              foregroundColor: Colors.white,
-                              elevation: 0,
-                              minimumSize: const Size(0, 52),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.tune_rounded, size: 18),
-                                SizedBox(width: 8),
-                                Text(
-                                  'Terapkan filter',
-                                  style: TextStyle(fontWeight: FontWeight.w800),
-                                ),
-                              ],
+                            }).toList(),
+                          ),
+                          const SizedBox(height: 26),
+                          _filterHeading('Jenis pekerjaan'),
+                          const SizedBox(height: 12),
+                          Wrap(
+                            spacing: 9,
+                            children: ['Semua', 'Daily', 'Shift'].map((value) {
+                              return _choiceChip(
+                                label: value,
+                                selected: type == value,
+                                onTap: () {
+                                  setModalState(() => type = value);
+                                },
+                              );
+                            }).toList(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(
+                        22,
+                        15,
+                        22,
+                        MediaQuery.of(context).viewInsets.bottom + 18,
+                      ),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        border: Border(top: BorderSide(color: borderColor)),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () {
+                                controller.resetFilter();
+                                Navigator.pop(sheetContext);
+                              },
+                              child: const Text('Reset'),
                             ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 12),
+                          Expanded(
+                            flex: 2,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                controller.applyFilter(
+                                  minWage: minWage,
+                                  rating: rating,
+                                  type: type,
+                                  jobTitle: jobTitleController.text,
+                                );
+                                Navigator.pop(sheetContext);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: purple,
+                                foregroundColor: Colors.white,
+                              ),
+                              child: const Text('Terapkan filter'),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },
@@ -456,12 +361,16 @@ class HomeScreen extends StatelessWidget {
                                   size: 15,
                                 ),
                                 const SizedBox(width: 5),
-                                const Text(
-                                  'Jakarta Pusat',
-                                  style: TextStyle(
-                                    color: mutedColor,
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w600,
+                                Obx(
+                                  () => Text(
+                                    locationController.locationName.value,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: mutedColor,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -518,7 +427,7 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Container(
-                      height: 52,
+                      height: 48,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(17),
