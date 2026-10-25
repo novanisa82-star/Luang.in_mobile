@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:geolocator/geolocator.dart';
+
 import 'package:luang_in/core/services/storage_service.dart';
 import 'package:luang_in/modules/onboarding/screens/onboarding_screen.dart';
 import 'package:luang_in/modules/main/screens/main_screen.dart';
@@ -24,6 +27,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (!mounted) return;
 
+    // Minta izin GPS hanya di Android/iOS.
+    // Chrome menggunakan mekanisme izin lokasi browser.
+    if (!kIsWeb) {
+      await _requestLocationPermission();
+    }
+
+    if (!mounted) return;
+
     final storage = Get.find<StorageService>();
 
     if (storage.isLoggedIn) {
@@ -41,14 +52,30 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
+  Future<void> _requestLocationPermission() async {
+    try {
+      var permission = await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        debugPrint(
+          'Izin GPS ditolak permanen. Aktifkan melalui pengaturan aplikasi.',
+        );
+      }
+    } catch (e) {
+      debugPrint('Gagal meminta izin GPS: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: PalleteColor.gradient,
-        ),
+        decoration: BoxDecoration(gradient: PalleteColor.gradient),
         child: Stack(
           children: [
             Positioned(
