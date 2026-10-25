@@ -11,8 +11,12 @@ import '../controllers/location_controller.dart';
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
 
-  final LocationController locationController = Get.put(LocationController());
-  final HomeController controller = Get.put(HomeController());
+  final LocationController locationController = Get.put(
+    LocationController(),
+    permanent: true,
+  );
+
+  final HomeController controller = Get.put(HomeController(), permanent: true);
 
   Color get purple => PalleteColor.primaryPurple;
 
@@ -289,7 +293,9 @@ class HomeScreen extends StatelessWidget {
         );
       },
     ).whenComplete(() {
-      jobTitleController.dispose();
+      Future.delayed(const Duration(milliseconds: 400), () {
+        jobTitleController.dispose();
+      });
     });
   }
 

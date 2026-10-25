@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:luang_in/core/services/storage_service.dart';
+import 'package:luang_in/core/services/api_service.dart';
 import 'package:luang_in/modules/auth/bindings/auth_binding.dart';
 import 'package:luang_in/modules/auth/screens/login_screen.dart';
 import 'package:luang_in/modules/auth/screens/register_screen.dart';
@@ -10,16 +11,28 @@ import 'package:luang_in/modules/main/screens/main_screen.dart';
 import 'package:luang_in/modules/onboarding/screens/onboarding_screen.dart';
 import 'package:luang_in/modules/onboarding/screens/skill_profile_screen.dart';
 import 'package:luang_in/modules/onboarding/screens/splash_screen.dart';
+import 'package:luang_in/modules/riwayat/services/riwayat_service.dart';
 import 'package:luang_in/utils/pallete_color.dart';
-import 'package:luang_in/core/services/api_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await GetStorage.init();
 
-  Get.put<StorageService>(StorageService(), permanent: true);
+  Get.put<StorageService>(
+    StorageService(),
+    permanent: true,
+  );
 
-  Get.put<ApiService>(ApiService(Get.find<StorageService>()), permanent: true);
+  Get.put<ApiService>(
+    ApiService(Get.find<StorageService>()),
+    permanent: true,
+  );
+
+  Get.put<RiwayatService>(
+    RiwayatService(),
+    permanent: true,
+  );
 
   runApp(const MyApp());
 }
@@ -41,8 +54,14 @@ class MyApp extends StatelessWidget {
       ),
       home: const SplashScreen(),
       getPages: [
-        GetPage(name: '/', page: () => const SplashScreen()),
-        GetPage(name: '/onboarding1', page: () => const OnboardingScreen()),
+        GetPage(
+          name: '/',
+          page: () => const SplashScreen(),
+        ),
+        GetPage(
+          name: '/onboarding1',
+          page: () => const OnboardingScreen(),
+        ),
         GetPage(
           name: '/LoginScreen',
           page: () => LoginScreen(),
@@ -58,9 +77,18 @@ class MyApp extends StatelessWidget {
           page: () => RegisterScreen(),
           binding: AuthBinding(),
         ),
-        GetPage(name: '/skill-profile', page: () => SkillProfileScreen()),
-        GetPage(name: '/main', page: () => MainScreen()),
-        GetPage(name: '/MainScreen', page: () => MainScreen()),
+        GetPage(
+          name: '/skill-profile',
+          page: () => SkillProfileScreen(),
+        ),
+        GetPage(
+          name: '/main',
+          page: () => MainScreen(),
+        ),
+        GetPage(
+          name: '/MainScreen',
+          page: () => MainScreen(),
+        ),
       ],
       unknownRoute: GetPage(
         name: '/not-found',

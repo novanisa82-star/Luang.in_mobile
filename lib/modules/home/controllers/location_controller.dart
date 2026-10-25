@@ -1,11 +1,9 @@
-
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
 class LocationController extends GetxController {
-  final Geocoding geocoding = Geocoding();
-
   final locationName = 'Mendeteksi lokasi...'.obs;
   final isLoading = false.obs;
 
@@ -24,7 +22,7 @@ class LocationController extends GetxController {
           await Geolocator.isLocationServiceEnabled();
 
       if (!serviceEnabled) {
-        locationName.value = 'GPS belum aktif';
+        locationName.value = 'Aktifkan layanan lokasi';
         return;
       }
 
@@ -47,7 +45,14 @@ class LocationController extends GetxController {
         ),
       );
 
-      final places = await geocoding.placemarkFromCoordinates(
+      if (kIsWeb) {
+        locationName.value =
+            '${position.latitude.toStringAsFixed(4)}, '
+            '${position.longitude.toStringAsFixed(4)}';
+        return;
+      }
+
+      final places = await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
       );
@@ -68,6 +73,7 @@ class LocationController extends GetxController {
       }
     } catch (e) {
       locationName.value = 'Lokasi tidak tersedia';
+      debugPrint('Error lokasi: $e');
     } finally {
       isLoading.value = false;
     }

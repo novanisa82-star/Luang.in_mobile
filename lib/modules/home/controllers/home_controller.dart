@@ -21,10 +21,16 @@ class HomeController extends GetxController {
   final selectedRating = 0.0.obs;
   final selectedType = 'Semua'.obs;
 
-  final searchController = TextEditingController();
-  final jobTitleFilterController = TextEditingController();
+  final TextEditingController searchController = TextEditingController();
+  final TextEditingController jobTitleFilterController =
+      TextEditingController();
 
-  final categories = ['Semua', 'Layanan F&B', 'Upah Tinggi', 'Hari Ini'];
+  final categories = [
+    'Semua',
+    'Layanan F&B',
+    'Upah Tinggi',
+    'Hari Ini',
+  ];
 
   @override
   void onInit() {
@@ -74,7 +80,9 @@ class HomeController extends GetxController {
         'price': _formatRupiah(upahAngka),
         'priceValue': upahAngka,
         'unit': p.durasi,
-        'type': p.durasi.toLowerCase().contains('shift') ? 'Shift' : 'Daily',
+        'type': p.durasi.toLowerCase().contains('shift')
+            ? 'Shift'
+            : 'Daily',
         'rating': p.rating,
         'total_rating': p.totalRating,
         'title': p.judul,
@@ -116,7 +124,8 @@ class HomeController extends GetxController {
       final type = gig['type'].toString();
       final time = gig['time'].toString();
 
-      final matchesSearch = title.contains(query) || company.contains(query);
+      final matchesSearch =
+          title.contains(query) || company.contains(query);
 
       final matchesJobFilter =
           jobFilter.isEmpty ||
@@ -137,9 +146,11 @@ class HomeController extends GetxController {
       }
 
       final matchesWage = price >= selectedMinWage.value;
+
       final matchesRating =
           selectedRating.value == 0 ||
           (rating != null && rating >= selectedRating.value);
+
       final matchesType =
           selectedType.value == 'Semua' || type == selectedType.value;
 
@@ -181,8 +192,10 @@ class HomeController extends GetxController {
     selectedMinWage.value = 0;
     selectedRating.value = 0;
     selectedType.value = 'Semua';
+
     jobTitleFilterController.clear();
     isFilterActive.value = false;
+
     update();
   }
 
