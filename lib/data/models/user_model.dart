@@ -1,3 +1,4 @@
+
 class UserModel {
   final int? id;
   final String name;
@@ -5,6 +6,7 @@ class UserModel {
   final String? whatsapp;
   final String? domisili;
   final String? role;
+  final String? fotoProfil;
 
   UserModel({
     this.id,
@@ -13,18 +15,18 @@ class UserModel {
     this.whatsapp,
     this.domisili,
     this.role,
+    this.fotoProfil,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'] is int
-          ? json['id'] as int
-          : int.tryParse(json['id']?.toString() ?? ''),
+      id: int.tryParse(json['id']?.toString() ?? ''),
       name: json['name']?.toString() ?? '',
       email: json['email']?.toString() ?? '',
       whatsapp: json['whatsapp']?.toString(),
       domisili: json['domisili']?.toString(),
       role: json['role']?.toString(),
+      fotoProfil: json['foto_profil']?.toString(),
     );
   }
 
@@ -36,6 +38,7 @@ class UserModel {
       'whatsapp': whatsapp,
       'domisili': domisili,
       'role': role,
+      'foto_profil': fotoProfil,
     };
   }
 }

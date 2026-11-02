@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:get/get.dart';
@@ -12,10 +11,7 @@ class ApiService extends GetxService {
   ApiService(this.storageService);
 
   Future<Map<String, dynamic>> get(String url) async {
-    final response = await http.get(
-      Uri.parse(url),
-      headers: await _headers(),
-    );
+    final response = await http.get(Uri.parse(url), headers: await _headers());
 
     return _handleResponse(response);
   }
@@ -55,9 +51,46 @@ class ApiService extends GetxService {
     return _handleResponse(response);
   }
 
-  Future<Map<String, String>> _headers({
-    bool authenticated = false,
+  Future<Map<String, dynamic>> putAuthenticated(
+    String url, {
+    required Map<String, dynamic> data,
   }) async {
+    final response = await http.put(
+      Uri.parse(url),
+      headers: await _headers(authenticated: true),
+      body: jsonEncode(data),
+    );
+
+    return _handleResponse(response);
+  }
+
+  Future<Map<String, dynamic>> uploadFile(
+    String url, {
+    required String filePath,
+    required String fieldName,
+  }) async {
+    final token = storageService.getToken();
+
+    if (token == null || token.isEmpty) {
+      throw Exception('Sesi login tidak ditemukan. Silakan login kembali.');
+    }
+
+    final request = http.MultipartRequest('POST', Uri.parse(url));
+
+    request.headers.addAll({
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+
+    request.files.add(await http.MultipartFile.fromPath(fieldName, filePath));
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    return _handleResponse(response);
+  }
+
+  Future<Map<String, String>> _headers({bool authenticated = false}) async {
     final headers = <String, String>{
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -88,9 +121,7 @@ class ApiService extends GetxService {
 
       data = decoded;
     } catch (_) {
-      throw Exception(
-        'Respons server tidak valid (${response.statusCode}).',
-      );
+      throw Exception('Respons server tidak valid (${response.statusCode}).');
     }
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
