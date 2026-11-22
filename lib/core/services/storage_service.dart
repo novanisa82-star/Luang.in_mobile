@@ -1,4 +1,6 @@
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import '../../modules/ai_chat/controllers/ai_chat_controller.dart';
 
 class StorageService {
   final GetStorage _storage = GetStorage();
@@ -16,6 +18,10 @@ class StorageService {
 
   Future<void> saveUser(Map<String, dynamic> user) async {
     await _storage.write(userKey, user);
+    // Sinkronkan AI Chat ke user baru yang baru login
+    if (Get.isRegistered<AiChatController>()) {
+      Get.find<AiChatController>().syncUserChatHistory();
+    }
   }
 
   Map<String, dynamic>? getUser() {
@@ -29,6 +35,10 @@ class StorageService {
   Future<void> clearAuth() async {
     await _storage.remove(tokenKey);
     await _storage.remove(userKey);
+    // Bersihkan memori AI Chat saat user keluar
+    if (Get.isRegistered<AiChatController>()) {
+      Get.find<AiChatController>().onUserLoggedOut();
+    }
   }
 
   bool get isLoggedIn {

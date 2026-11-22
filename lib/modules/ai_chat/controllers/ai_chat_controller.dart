@@ -44,34 +44,69 @@ class AiChatController extends GetxController {
   // Daftar Lowongan Terbuka untuk Dicocokkan
   final RxList<HomeModel> availableJobs = <HomeModel>[].obs;
 
+  // Key Storage user yang saat ini sedang aktif di memori
+  String _activeStorageKey = '';
+
   @override
   void onInit() {
     super.onInit();
-    _loadChatHistory();
+    syncUserChatHistory();
     _loadAvailableJobs();
     detectLocation();
   }
 
-  /// Mendapatkan Key Storage unik per ID User
+  /// Mendapatkan Key Storage unik per Akun (berdasarkan ID & Email)
   String _getStorageKey() {
     try {
       if (Get.isRegistered<StorageService>()) {
         final storageService = Get.find<StorageService>();
         final user = storageService.getUser();
-        if (user != null && user['id'] != null) {
-          return 'ai_chat_history_user_${user['id']}';
+        if (user != null) {
+          final id = user['id']?.toString().trim();
+          final email = user['email']?.toString().trim().toLowerCase();
+
+          if (id != null && id.isNotEmpty && id != '0' && id != 'null') {
+            return 'ai_chat_user_id_$id';
+          }
+
+          if (email != null && email.isNotEmpty && email != 'null') {
+            final cleanEmail = email.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '_');
+            return 'ai_chat_user_email_$cleanEmail';
+          }
         }
       }
     } catch (e) {
-      debugPrint('⚠️ [AI CHAT] Gagal mengambil user id untuk storage: $e');
+      debugPrint('⚠️ [AI CHAT] Gagal mengambil user id/email untuk storage: $e');
     }
-    return 'ai_chat_history_guest';
+    return 'ai_chat_guest';
+  }
+
+  /// Sinkronkan riwayat chat dengan user yang sedang login saat ini
+  void syncUserChatHistory() {
+    final currentKey = _getStorageKey();
+    if (_activeStorageKey != currentKey) {
+      debugPrint(
+        '🔄 [AI CHAT] Akun aktif berganti dari "$_activeStorageKey" ke "$currentKey". Memuat riwayat akun...',
+      );
+      _activeStorageKey = currentKey;
+      messages.clear();
+      _loadChatHistory();
+    }
+  }
+
+  /// Dijalankan saat user logout agar memori AI Chat bersih seketika
+  void onUserLoggedOut() {
+    debugPrint('🚪 [AI CHAT] User logout, mengosongkan riwayat chat di memori.');
+    _activeStorageKey = '';
+    messages.clear();
+    _initWelcomeMessage();
   }
 
   /// Memuat riwayat percakapan dari GetStorage
   void _loadChatHistory() {
     try {
       final key = _getStorageKey();
+      _activeStorageKey = key;
       final dynamic raw = _storage.read(key);
       if (raw is List && raw.isNotEmpty) {
         final List<AiMessage> loaded = [];
@@ -96,6 +131,7 @@ class AiChatController extends GetxController {
   Future<void> _saveChatHistory() async {
     try {
       final key = _getStorageKey();
+      _activeStorageKey = key;
       final toSave = messages
           .where((m) => !m.isLoading)
           .map((m) => m.toJson())
@@ -115,7 +151,7 @@ class AiChatController extends GetxController {
       _initWelcomeMessage();
       AppSnackbar.success(
         'Riwayat Direset',
-        'Percakapan AI Chat telah dibersihkan.',
+        'Percakapan AI Chat untuk akun ini telah dibersihkan.',
       );
     } catch (e) {
       debugPrint('⚠️ [AI CHAT] Gagal membersihkan riwayat chat: $e');

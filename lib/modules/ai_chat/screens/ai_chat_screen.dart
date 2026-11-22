@@ -25,6 +25,9 @@ class AiChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Sinkronkan chat dengan akun yang sedang login saat ini (mencegah chat tertukar)
+    controller.syncUserChatHistory();
+
     return Scaffold(
       backgroundColor: pageColor,
       appBar: _buildAppBar(context),
