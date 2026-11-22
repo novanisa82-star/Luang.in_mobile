@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
+import 'package:luang_in/modules/ai_chat/screens/ai_chat_screen.dart';
 import 'package:luang_in/modules/riwayat/screens/riwayat_screen.dart';
 import 'package:luang_in/modules/profile/screens/profile_screen.dart';
 import 'package:luang_in/utils/pallete_color.dart';
@@ -15,7 +16,7 @@ class MainScreen extends StatelessWidget {
 
   final List<Widget> screens = [
     HomeScreen(),
-    const Center(child: Text('AI Chat Screen')),
+    AiChatScreen(),
     const RiwayatScreen(),
     const ProfileScreen(),
   ];

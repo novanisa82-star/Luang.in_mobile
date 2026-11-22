@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:luang_in/core/services/storage_service.dart';
 import 'package:luang_in/core/services/api_service.dart';
+import 'package:luang_in/modules/ai_chat/controllers/ai_chat_controller.dart';
+import 'package:luang_in/modules/ai_chat/screens/ai_chat_screen.dart';
 import 'package:luang_in/modules/auth/bindings/auth_binding.dart';
 import 'package:luang_in/modules/auth/screens/login_screen.dart';
 import 'package:luang_in/modules/auth/screens/register_screen.dart';
@@ -16,6 +18,13 @@ import 'package:luang_in/utils/pallete_color.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Load environment variables dari file .env
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    debugPrint('⚠️ [DOTENV] Gagal memuat berkas .env: $e');
+  }
 
   await GetStorage.init();
 
@@ -31,6 +40,11 @@ Future<void> main() async {
 
   Get.put<RiwayatService>(
     RiwayatService(),
+    permanent: true,
+  );
+
+  Get.put<AiChatController>(
+    AiChatController(),
     permanent: true,
   );
 
@@ -88,6 +102,10 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/MainScreen',
           page: () => MainScreen(),
+        ),
+        GetPage(
+          name: '/ai-chat',
+          page: () => AiChatScreen(),
         ),
       ],
       unknownRoute: GetPage(

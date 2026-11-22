@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 class ApiConfig {
   // IP laptop saat terhubung ke Wi-Fi / Hotspot untuk testing di HP fisik
-  static const String _lanIp = ' 192.168.110.54';
+  static const String _lanIp = '192.168.1.4';
 
   // Otomatis memilih host:
   // - Jika dijalankan di browser (Chrome / Flutter Web), gunakan 127.0.0.1
