@@ -4,6 +4,7 @@ import 'package:luang_in/modules/profile/controllers/profile_controller.dart';
 import 'package:luang_in/modules/profile/screens/informasi_pribadi_screen.dart';
 import 'package:luang_in/core/services/storage_service.dart';
 import 'package:luang_in/modules/profile/screens/skill_profile_screen.dart';
+import 'package:luang_in/utils/app_snackbar.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -210,9 +211,9 @@ class ProfileScreen extends StatelessWidget {
                       title: 'Verifikasi identitas',
                       subtitle: 'Status verifikasi KTP',
                       onTap: () {
-                        Get.snackbar(
-                          'Verifikasi identitas',
-                          'Fitur verifikasi identitas.',
+                        AppSnackbar.info(
+                          'Verifikasi Identitas',
+                          'Fitur verifikasi identitas (KTP) sedang dalam tahap pengembangan.',
                         );
                       },
                       last: true,

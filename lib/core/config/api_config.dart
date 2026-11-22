@@ -1,10 +1,23 @@
-class ApiConfig {
-  static const String baseUrl = 'http://172.16.69.229:8000/api';
+import 'package:flutter/foundation.dart';
 
-  static const String register = '$baseUrl/mobile/register';
-  static const String login = '$baseUrl/mobile/login';
-  static const String me = '$baseUrl/mobile/me';
-  static const String logout = '$baseUrl/mobile/logout';
-  static const String skillProfile = '$baseUrl/mobile/skill-profile';
-  static const String completeRegistration = '$baseUrl/mobile/complete-registration';
+class ApiConfig {
+  // IP laptop saat terhubung ke Wi-Fi / Hotspot untuk testing di HP fisik
+  static const String _lanIp = ' 192.168.110.54';
+
+  // Otomatis memilih host:
+  // - Jika dijalankan di browser (Chrome / Flutter Web), gunakan 127.0.0.1
+  // - Jika di HP fisik Android / Emulator, gunakan IP LAN
+  static String get baseUrl {
+    if (kIsWeb) {
+      return 'http://127.0.0.1:8000/api';
+    }
+    return 'http://$_lanIp:8000/api';
+  }
+
+  static String get register => '$baseUrl/mobile/register';
+  static String get login => '$baseUrl/mobile/login';
+  static String get me => '$baseUrl/mobile/me';
+  static String get logout => '$baseUrl/mobile/logout';
+  static String get skillProfile => '$baseUrl/mobile/skill-profile';
+  static String get completeRegistration => '$baseUrl/mobile/complete-registration';
 }

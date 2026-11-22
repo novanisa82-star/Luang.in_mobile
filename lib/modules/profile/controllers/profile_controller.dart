@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:luang_in/core/services/api_service.dart';
 import 'package:luang_in/data/models/user_model.dart';
 import 'package:luang_in/core/config/api_config.dart';
+import 'package:luang_in/utils/app_snackbar.dart';
 
 class ProfileController extends GetxController {
   final ApiService apiService = Get.find<ApiService>();
@@ -62,10 +63,10 @@ class ProfileController extends GetxController {
         _setUser(UserModel.fromJson(data));
       }
     } catch (e) {
-      Get.snackbar(
-        'Gagal memuat profil',
-        e.toString().replaceFirst('Exception: ', ''),
-        snackPosition: SnackPosition.TOP,
+      AppSnackbar.showError(
+        e,
+        title: 'Gagal Memuat Profil',
+        defaultMessage: 'Tidak dapat memuat informasi profil. Silakan coba kembali.',
       );
     } finally {
       isLoading.value = false;
@@ -140,16 +141,15 @@ class ProfileController extends GetxController {
         await loadProfile();
       }
 
-      Get.snackbar(
-        'Berhasil',
-        'Foto profil berhasil diperbarui.',
-        snackPosition: SnackPosition.TOP,
+      AppSnackbar.success(
+        'Foto Diperbarui',
+        'Foto profil Anda berhasil diperbarui.',
       );
     } catch (e) {
-      Get.snackbar(
-        'Gagal mengunggah foto',
-        e.toString().replaceFirst('Exception: ', ''),
-        snackPosition: SnackPosition.TOP,
+      AppSnackbar.showError(
+        e,
+        title: 'Gagal Mengunggah Foto',
+        defaultMessage: 'Gagal mengunggah foto profil. Silakan pilih foto lain atau coba lagi.',
       );
     } finally {
       isUploadingPhoto.value = false;
@@ -221,7 +221,7 @@ class ProfileController extends GetxController {
 
   Future<void> saveProfile() async {
     if (nameController.text.trim().isEmpty) {
-      Get.snackbar('Perhatian', 'Nama tidak boleh kosong.');
+      AppSnackbar.warning('Perhatian', 'Nama lengkap tidak boleh kosong.');
       return;
     }
 
@@ -245,17 +245,16 @@ class ProfileController extends GetxController {
         await loadProfile();
       }
 
-      Get.snackbar(
+      AppSnackbar.success(
         'Berhasil',
         response['message']?.toString() ??
-            'Informasi pribadi berhasil diperbarui.',
-        snackPosition: SnackPosition.TOP,
+            'Informasi pribadi Anda berhasil diperbarui.',
       );
     } catch (e) {
-      Get.snackbar(
-        'Gagal menyimpan',
-        e.toString().replaceFirst('Exception: ', ''),
-        snackPosition: SnackPosition.TOP,
+      AppSnackbar.showError(
+        e,
+        title: 'Gagal Menyimpan',
+        defaultMessage: 'Gagal memperbarui informasi profil Anda.',
       );
     } finally {
       isSaving.value = false;
@@ -268,17 +267,20 @@ class ProfileController extends GetxController {
     final confirmation = confirmPasswordController.text;
 
     if (current.isEmpty || password.isEmpty || confirmation.isEmpty) {
-      Get.snackbar('Perhatian', 'Semua kolom password wajib diisi.');
+      AppSnackbar.warning('Perhatian', 'Semua kolom kata sandi wajib diisi.');
       return;
     }
 
     if (password.length < 8) {
-      Get.snackbar('Perhatian', 'Password baru minimal 8 karakter.');
+      AppSnackbar.warning(
+        'Perhatian',
+        'Kata sandi baru minimal harus terdiri dari 8 karakter.',
+      );
       return;
     }
 
     if (password != confirmation) {
-      Get.snackbar('Perhatian', 'Konfirmasi password tidak sama.');
+      AppSnackbar.warning('Perhatian', 'Konfirmasi kata sandi tidak cocok.');
       return;
     }
 
@@ -298,16 +300,16 @@ class ProfileController extends GetxController {
       newPasswordController.clear();
       confirmPasswordController.clear();
 
-      Get.snackbar(
+      AppSnackbar.success(
         'Berhasil',
-        response['message']?.toString() ?? 'Password berhasil diperbarui.',
-        snackPosition: SnackPosition.TOP,
+        response['message']?.toString() ?? 'Kata sandi berhasil diperbarui.',
       );
     } catch (e) {
-      Get.snackbar(
-        'Gagal mengganti password',
-        e.toString().replaceFirst('Exception: ', ''),
-        snackPosition: SnackPosition.TOP,
+      AppSnackbar.showError(
+        e,
+        title: 'Gagal Mengubah Kata Sandi',
+        defaultMessage:
+            'Gagal memperbarui kata sandi. Pastikan kata sandi lama Anda benar.',
       );
     } finally {
       isChangingPassword.value = false;

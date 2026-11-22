@@ -497,7 +497,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                       child: OutlinedButton.icon(
                                         onPressed: () {
                                           _showLocationMessage(
-                                            'Koordinat: -6.2255, 106.8097',
+                                            'Lokasi kantor pekerjaan berada di area Jakarta Selatan.',
                                           );
                                         },
                                         icon: const Icon(
@@ -524,8 +524,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                       child: ElevatedButton.icon(
                                         onPressed: () {
                                           _showLocationMessage(
-                                            'Tambahkan url Google Maps untuk '
-                                            'mengaktifkan petunjuk arah.',
+                                            'Petunjuk arah rute menuju lokasi kantor akan segera tersedia.',
                                           );
                                         },
                                         icon: const Icon(
@@ -630,8 +629,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       child: ElevatedButton(
                         onPressed: () {
                           _showLocationMessage(
-                            'Fitur lamaran perlu dihubungkan dengan '
-                            'halaman formulir lamaran.',
+                            'Fitur pengajuan lamaran untuk lowongan ini akan segera tersedia.',
                           );
                         },
                         style: ElevatedButton.styleFrom(

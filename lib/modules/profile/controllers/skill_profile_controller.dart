@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luang_in/core/services/api_service.dart';
 import 'package:luang_in/core/config/api_config.dart';
+import 'package:luang_in/utils/app_snackbar.dart';
 
 class SkillProfileController extends GetxController {
   final ApiService apiService = Get.find<ApiService>();
@@ -77,10 +78,10 @@ class SkillProfileController extends GetxController {
         }
       }
     } catch (e) {
-      Get.snackbar(
-        'Gagal memuat keahlian',
-        e.toString().replaceFirst('Exception: ', ''),
-        snackPosition: SnackPosition.TOP,
+      AppSnackbar.showError(
+        e,
+        title: 'Gagal Memuat Keahlian',
+        defaultMessage: 'Tidak dapat memuat daftar keahlian. Silakan coba kembali.',
       );
     } finally {
       isLoading.value = false;
@@ -93,10 +94,9 @@ class SkillProfileController extends GetxController {
     if (value.isEmpty) return;
 
     if (skills.any((item) => item.toLowerCase() == value.toLowerCase())) {
-      Get.snackbar(
-        'Informasi',
-        'Keahlian tersebut sudah ditambahkan.',
-        snackPosition: SnackPosition.TOP,
+      AppSnackbar.warning(
+        'Keahlian Sudah Ada',
+        'Keahlian tersebut sudah ada dalam daftar Anda.',
       );
       return;
     }
@@ -111,17 +111,17 @@ class SkillProfileController extends GetxController {
 
   Future<void> saveSkillProfile() async {
     if (selectedRole.value.isEmpty) {
-      Get.snackbar('Perhatian', 'Pilih bidang pekerjaan terlebih dahulu.');
+      AppSnackbar.warning('Perhatian', 'Silakan pilih bidang pekerjaan utama Anda.');
       return;
     }
 
     if (skills.isEmpty) {
-      Get.snackbar('Perhatian', 'Tambahkan minimal satu keahlian.');
+      AppSnackbar.warning('Perhatian', 'Tambahkan minimal satu keahlian yang Anda kuasai.');
       return;
     }
 
     if (selectedExperience.value.isEmpty) {
-      Get.snackbar('Perhatian', 'Pilih pengalaman kerja terlebih dahulu.');
+      AppSnackbar.warning('Perhatian', 'Silakan pilih tingkat pengalaman kerja Anda.');
       return;
     }
 
@@ -149,16 +149,15 @@ class SkillProfileController extends GetxController {
         },
       );
 
-      Get.snackbar(
+      AppSnackbar.success(
         'Berhasil',
         response['message']?.toString() ?? 'Profil keahlian berhasil disimpan.',
-        snackPosition: SnackPosition.TOP,
       );
     } catch (e) {
-      Get.snackbar(
-        'Gagal menyimpan',
-        e.toString().replaceFirst('Exception: ', ''),
-        snackPosition: SnackPosition.TOP,
+      AppSnackbar.showError(
+        e,
+        title: 'Gagal Menyimpan',
+        defaultMessage: 'Gagal menyimpan profil keahlian Anda.',
       );
     } finally {
       isSaving.value = false;

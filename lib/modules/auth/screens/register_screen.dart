@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../../../utils/pallete_color.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import '../../../utils/app_snackbar.dart';
 import '../controllers/auth_controller.dart';
 import 'login_screen.dart';
 
@@ -11,384 +11,477 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<AuthController>();
-    final isAgreeTerms = false.obs;
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          backgroundColor: const Color(0xFFFDC5CE),
+          body: Stack(
             children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: PalleteColor.lightPurple,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Image.asset(
-                  'assets/images/logo.png',
-                  width: 28,
-                  height: 28,
-                ),
-              ),
-              const SizedBox(height: 28),
-              Text(
-                'Buat Akun',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w800,
-                  color: const Color(0xFF111827),
-                  letterSpacing: -0.5,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'Mulai mencari atau membuka pekerjaan dalam hitungan menit.',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: const Color(0xFF6B7280),
-                ),
-              ),
-              const SizedBox(height: 28),
-              OutlinedButton(
-                onPressed: controller.loginWithGoogle,
-                style: OutlinedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 52),
-                  backgroundColor: Colors.white,
-                  side: const BorderSide(
-                    color: Color(0xFFE5E7EB),
-                    width: 1.2,
+              // Background Gradient with Concentric Arc Waves
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                height: MediaQuery.of(context).size.height * 0.35,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color(0xFFFDC3CB),
+                        Color(0xFFDFC6FD),
+                        Color(0xFFC3AEFC),
+                      ],
+                      begin: Alignment.bottomLeft,
+                      end: Alignment.topRight,
+                    ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  elevation: 0,
+                  child: CustomPaint(painter: ConcentricArcsPainter()),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+              ),
+
+              // Main Layout
+              SafeArea(
+                child: Column(
                   children: [
-                    Container(
-                      width: 20,
-                      height: 20,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
+                    // Back Button
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 8.0,
                       ),
-                      child: CustomPaint(
-                        painter: _GoogleIconPainter(),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      'Daftar dengan Google',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF1F2937),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  const Expanded(
-                    child: Divider(
-                      color: Color(0xFFE5E7EB),
-                      thickness: 1,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    child: Text(
-                      'ATAU DAFTAR MANUAL',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF9CA3AF),
-                        letterSpacing: 0.8,
-                      ),
-                    ),
-                  ),
-                  const Expanded(
-                    child: Divider(
-                      color: Color(0xFFE5E7EB),
-                      thickness: 1,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Nama Lengkap',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF374151),
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: controller.nameController,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF111827),
-                ),
-                decoration: InputDecoration(
-                  hintText: 'contoh: Maya Indah',
-                  hintStyle: GoogleFonts.plusJakartaSans(
-                    fontSize: 14,
-                    color: const Color(0xFF9CA3AF),
-                  ),
-                  filled: true,
-                  fillColor: const Color(0xFFF9FAFB),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(
-                      color: Color(0xFFF3F4F6),
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(
-                      color: PalleteColor.primaryPurple,
-                      width: 1.5,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 18),
-              Text(
-                'Email',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF374151),
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: controller.emailController,
-                keyboardType: TextInputType.emailAddress,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF111827),
-                ),
-                decoration: InputDecoration(
-                  hintText: 'nama@domain.com',
-                  hintStyle: GoogleFonts.plusJakartaSans(
-                    fontSize: 14,
-                    color: const Color(0xFF9CA3AF),
-                  ),
-                  filled: true,
-                  fillColor: const Color(0xFFF9FAFB),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(
-                      color: Color(0xFFF3F4F6),
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(
-                      color: PalleteColor.primaryPurple,
-                      width: 1.5,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 18),
-              Text(
-                'Kata Sandi',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF374151),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Obx(
-                () => TextField(
-                  controller: controller.passwordController,
-                  obscureText: controller.obscurePassword.value,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF111827),
-                  ),
-                  decoration: InputDecoration(
-                    hintText: 'Buat kata sandi yang kuat',
-                    hintStyle: GoogleFonts.plusJakartaSans(
-                      fontSize: 14,
-                      color: const Color(0xFF9CA3AF),
-                    ),
-                    filled: true,
-                    fillColor: const Color(0xFFF9FAFB),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
-                    suffixIcon: IconButton(
-                      onPressed: controller.togglePassword,
-                      icon: Icon(
-                        controller.obscurePassword.value
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                        color: const Color(0xFF9CA3AF),
+                      child: Row(
+                        children: [
+                          InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: () {
+                              if (Navigator.canPop(context)) {
+                                Get.back();
+                              } else {
+                                Get.off(() => LoginScreen());
+                              }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6.0,
+                                vertical: 6.0,
+                              ),
+                              child: Row(
+                                children: const [
+                                  Icon(
+                                    Icons.chevron_left_rounded,
+                                    size: 22,
+                                    color: Color(0xFF2D2B3E),
+                                  ),
+                                  SizedBox(width: 2),
+                                  Text(
+                                    'Back',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: Color(0xFF2D2B3E),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(
-                        color: Color(0xFFF3F4F6),
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(
-                        color: PalleteColor.primaryPurple,
-                        width: 1.5,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Obx(
-                () => Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: Checkbox(
-                        value: isAgreeTerms.value,
-                        onChanged: (value) {
-                          isAgreeTerms.value = value ?? false;
-                        },
-                        activeColor: PalleteColor.primaryPurple,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
+
+                    const SizedBox(height: 16),
+
+                    // White Card Bottom Sheet
                     Expanded(
-                      child: Text(
-                        'Saya menyetujui Syarat dan Ketentuan serta Kebijakan Privasi Luang.In.',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xFF4B5563),
-                          height: 1.4,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 28),
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: Obx(
-                  () => ElevatedButton(
-                    onPressed: controller.isLoading.value
-                        ? null
-                        : () {
-                            if (!isAgreeTerms.value) {
-                              Get.snackbar(
-                                'Informasi',
-                                'Silakan setujui syarat dan ketentuan terlebih dahulu.',
-                                snackPosition: SnackPosition.TOP,
-                              );
-                              return;
-                            }
-
-                            controller.confirmPasswordController.text =
-                                controller.passwordController.text;
-
-                            controller.register();
-                          },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      elevation: 3,
-                      shadowColor:
-                          PalleteColor.primaryPurple.withOpacity(0.3),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: Ink(
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xFF9333EA),
-                            Color(0xFF7E22CE),
+                      child: Container(
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(36),
+                            topRight: Radius.circular(36),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0x0D000000),
+                              blurRadius: 16,
+                              offset: Offset(0, -4),
+                            ),
                           ],
                         ),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: controller.isLoading.value
-                            ? const SizedBox(
-                                width: 22,
-                                height: 22,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(36),
+                            topRight: Radius.circular(36),
+                          ),
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24.0,
+                              vertical: 28.0,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  'Create Your Account',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF1E1E2D),
+                                    letterSpacing: -0.3,
+                                  ),
                                 ),
-                              )
-                            : Text(
-                                'Buat Akun',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
+                                const SizedBox(height: 8),
+                                RichText(
+                                  textAlign: TextAlign.center,
+                                  text: const TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Color(0xFF71717A),
+                                      height: 1.4,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text:
+                                            "We're here to help you reach the peaks\nof learning. ",
+                                      ),
+                                      TextSpan(
+                                        text: 'Are you ready?',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          color: Color(0xFF27272A),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 32),
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Sudah punya akun? ',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xFF6B7280),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Get.off(() => LoginScreen());
-                      },
-                      child: Text(
-                        'Masuk sekarang',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w800,
-                          color: PalleteColor.primaryPurple,
+                                const SizedBox(height: 28),
+
+                                // Full Name Field
+                                TextField(
+                                  controller: controller.nameController,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Color(0xFF1E1E2D),
+                                  ),
+                                  decoration: InputDecoration(
+                                    hintText: 'Enter full name',
+                                    prefixIcon: const Icon(
+                                        Icons.person_2_outlined,
+                                        size: 20,
+                                        color: Color(0xFF9CA3AF),
+                                      ),
+                                    hintStyle: const TextStyle(
+                                      color: Color(0xFFA1A1AA),
+                                      fontSize: 14,
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 18,
+                                      vertical: 16,
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                      borderSide: const BorderSide(
+                                        color: Color(0xFFE4E4E7),
+                                        width: 1.2,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                      borderSide: const BorderSide(
+                                        color: Color(0xFFA78BFA),
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 14),
+
+                                // Email Field
+                                TextField(
+                                  controller: controller.emailController,
+                                  keyboardType: TextInputType.emailAddress,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Color(0xFF1E1E2D),
+                                  ),
+                                  decoration: InputDecoration(
+                                    hintText: 'Enter email',
+                                    prefixIcon: const Icon(
+                                      Icons.email_outlined,
+                                      size: 20,
+                                      color: Color(0xFF9CA3AF),
+                                    ),
+                                    hintStyle: const TextStyle(
+                                      color: Color(0xFFA1A1AA),
+                                      fontSize: 14,
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 18,
+                                      vertical: 16,
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                      borderSide: const BorderSide(
+                                        color: Color(0xFFE4E4E7),
+                                        width: 1.2,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(14),
+                                      borderSide: const BorderSide(
+                                        color: Color(0xFFA78BFA),
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 14),
+
+                                // Password Field
+                                Obx(
+                                  () => TextField(
+                                    controller: controller.passwordController,
+                                    obscureText:
+                                        controller.obscurePassword.value,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xFF1E1E2D),
+                                    ),
+                                    decoration: InputDecoration(
+                                      hintText: 'Enter password',
+                                      prefixIcon: const Icon(
+                                        Icons.lock,
+                                        size: 20,
+                                        color: Color(0xFF9CA3AF),
+                                      ),
+                                      hintStyle: const TextStyle(
+                                        color: Color(0xFFA1A1AA),
+                                        fontSize: 14,
+                                      ),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            horizontal: 18,
+                                            vertical: 16,
+                                          ),
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      suffixIcon: IconButton(
+                                        onPressed: controller.togglePassword,
+                                        icon: Icon(
+                                          controller.obscurePassword.value
+                                              ? Icons.visibility_outlined
+                                              : Icons.visibility_off_outlined,
+                                          color: const Color(0xFF9CA3AF),
+                                          size: 20,
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(14),
+                                        borderSide: const BorderSide(
+                                          color: Color(0xFFE4E4E7),
+                                          width: 1.2,
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(14),
+                                        borderSide: const BorderSide(
+                                          color: Color(0xFFA78BFA),
+                                          width: 1.5,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+
+                                // Forgot Password Link
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      AppSnackbar.info(
+                                        'Lupa Kata Sandi',
+                                        'Fitur pengaturan ulang kata sandi sedang dalam tahap pengembangan.',
+                                      );
+                                    },
+                                    child: const Text(
+                                      'Forgot password?',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFF6B5DE8),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+
+                                // Get Started Gradient Button
+                                Obx(
+                                  () => Container(
+                                    width: double.infinity,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(25),
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xFFF9A8B6),
+                                          Color(0xFFA78BFA),
+                                        ],
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: const Color(
+                                            0xFFA78BFA,
+                                          ).withOpacity(0.35),
+                                          blurRadius: 14,
+                                          offset: const Offset(0, 5),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(25),
+                                        onTap: controller.isLoading.value
+                                            ? null
+                                            : () {
+                                                controller
+                                                    .confirmPasswordController
+                                                    .text = controller
+                                                    .passwordController
+                                                    .text;
+                                                controller.register();
+                                              },
+                                        child: Center(
+                                          child: controller.isLoading.value
+                                              ? const SizedBox(
+                                                  width: 22,
+                                                  height: 22,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                        color: Colors.white,
+                                                      ),
+                                                )
+                                              : const Text(
+                                                  'Get Started',
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 32),
+
+                                // Sign Up With Divider
+                                Row(
+                                  children: const [
+                                    Expanded(
+                                      child: Divider(
+                                        color: Color(0xFFE5E7EB),
+                                        thickness: 1,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 14,
+                                      ),
+                                      child: Text(
+                                        'Sign up with',
+                                        style: TextStyle(
+                                          color: Color(0xFF9CA3AF),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Divider(
+                                        color: Color(0xFFE5E7EB),
+                                        thickness: 1,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 22),
+
+                                // Social Media Button: Google only (Facebook & Apple removed)
+                                Center(
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(25),
+                                    onTap: () => controller.loginWithGoogle(),
+                                    child: Container(
+                                      width: 48,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: const Color(0xFFE5E7EB),
+                                          width: 1,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(
+                                              0.04,
+                                            ),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: const GoogleLogoWidget(size: 22),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 26),
+
+                                // Already have an account? Log In
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      'Already have an account? ',
+                                      style: TextStyle(
+                                        color: Color(0xFF6B7280),
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        if (Navigator.canPop(context)) {
+                                          Get.back();
+                                        } else {
+                                          Get.off(() => LoginScreen());
+                                        }
+                                      },
+                                      child: const Text(
+                                        'Log In',
+                                        style: TextStyle(
+                                          color: Color(0xFF6B5DE8),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -397,71 +490,14 @@ class RegisterScreen extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
+        )
+        .animate(delay: 50.ms)
+        .fade(duration: 400.ms)
+        .slideY(
+          begin: 0.05,
+          end: 0,
+          duration: 400.ms,
+          curve: Curves.easeOutQuad,
+        );
   }
-}
-
-class _GoogleIconPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final double w = size.width;
-    final double h = size.height;
-
-    final Paint redPaint = Paint()..color = const Color(0xFFEA4335);
-    final Paint bluePaint = Paint()..color = const Color(0xFF4285F4);
-    final Paint greenPaint = Paint()..color = const Color(0xFF34A853);
-    final Paint yellowPaint = Paint()..color = const Color(0xFFFBBC05);
-
-    final Offset center = Offset(w / 2, h / 2);
-    final double radius = w / 2;
-
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -0.5,
-      1.8,
-      true,
-      bluePaint,
-    );
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -2.4,
-      1.9,
-      true,
-      redPaint,
-    );
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      2.4,
-      1.5,
-      true,
-      yellowPaint,
-    );
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      1.2,
-      1.2,
-      true,
-      greenPaint,
-    );
-
-    canvas.drawCircle(
-      center,
-      radius * 0.55,
-      Paint()..color = Colors.white,
-    );
-
-    final Rect barRect = Rect.fromLTWH(
-      w * 0.45,
-      h * 0.4,
-      w * 0.55,
-      h * 0.22,
-    );
-
-    canvas.drawRect(barRect, bluePaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

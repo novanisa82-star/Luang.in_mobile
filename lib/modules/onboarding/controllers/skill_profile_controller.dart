@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../../core/config/api_config.dart';
 import '../../../core/services/api_service.dart';
 import '../../../core/services/storage_service.dart';
+import '../../../utils/app_snackbar.dart';
 
 class SkillProfileController extends GetxController {
   final ApiService apiService = Get.find<ApiService>();
@@ -25,7 +26,7 @@ class SkillProfileController extends GetxController {
     '> 4 Tahun',
   ];
 
-  late Map<String, dynamic> registrationData;
+  Map<String, dynamic> registrationData = {};
 
   @override
   void onInit() {
@@ -65,7 +66,10 @@ class SkillProfileController extends GetxController {
     if (skill.isEmpty) return;
 
     if (skills.any((item) => item.toLowerCase() == skill.toLowerCase())) {
-      _showMessage('Keahlian tersebut sudah ditambahkan.');
+      AppSnackbar.warning(
+        'Keahlian Sudah Ada',
+        'Keahlian tersebut sudah ada dalam daftar Anda.',
+      );
       return;
     }
 
@@ -87,17 +91,56 @@ class SkillProfileController extends GetxController {
     final whatsapp = contactController.text.trim();
     final role = roleController.text.trim();
 
+    if (whatsapp.isEmpty || role.isEmpty || skills.isEmpty) {
+      AppSnackbar.warning(
+        'Data Belum Lengkap',
+        'Nomor WhatsApp, pekerjaan utama, dan minimal satu keahlian wajib diisi.',
+      );
+      return;
+    }
+
+    // Jika pengguna sudah dalam kondisi login, simpan pembaruan profil ke database
+    if (storageService.isLoggedIn) {
+      try {
+        isLoading.value = true;
+        final response = await apiService.postAuthenticated(
+          ApiConfig.skillProfile,
+          data: {
+            'whatsapp': whatsapp,
+            'primary_role': role,
+            'skills': skills.toList(),
+            'experience': experience.value,
+          },
+        );
+
+        AppSnackbar.success(
+          'Berhasil',
+          response['message']?.toString() ??
+              'Profil keahlian Anda berhasil diperbarui.',
+        );
+        Get.offAllNamed('/main');
+        return;
+      } catch (e) {
+        AppSnackbar.showError(
+          e,
+          title: 'Gagal Menyimpan',
+          defaultMessage:
+              'Gagal memperbarui profil keahlian. Silakan periksa koneksi dan coba lagi.',
+        );
+        return;
+      } finally {
+        isLoading.value = false;
+      }
+    }
+
+    // Jika dari alur pendaftaran baru
     if (registrationData['name'] == null ||
         registrationData['email'] == null ||
         registrationData['password'] == null ||
         registrationData['password_confirmation'] == null) {
-      _showMessage('Data registrasi tidak ditemukan. Silakan daftar kembali.');
-      return;
-    }
-
-    if (whatsapp.isEmpty || role.isEmpty || skills.isEmpty) {
-      _showMessage(
-        'WhatsApp, pekerjaan utama, dan minimal satu keahlian wajib diisi.',
+      AppSnackbar.warning(
+        'Data Tidak Lengkap',
+        'Data pendaftaran tidak ditemukan. Silakan ulangi proses pendaftaran.',
       );
       return;
     }
@@ -120,23 +163,32 @@ class SkillProfileController extends GetxController {
       final user = response['user'];
 
       if (token == null || token.isEmpty || user is! Map) {
-        _showMessage('Registrasi belum berhasil. Silakan coba kembali.');
+        AppSnackbar.error(
+          'Pendaftaran Belum Berhasil',
+          'Akun belum dapat diaktifkan. Silakan coba beberapa saat lagi.',
+        );
         return;
       }
 
       await storageService.saveToken(token);
       await storageService.saveUser(Map<String, dynamic>.from(user));
 
+      AppSnackbar.success(
+        'Selamat Datang!',
+        'Akun Anda berhasil dibuat. Selamat memulai perjalanan karier Anda!',
+      );
+
       Get.offAllNamed('/main');
-    } catch (_) {
-      _showMessage('Profil gagal disimpan. Periksa data dan coba kembali.');
+    } catch (e) {
+      AppSnackbar.showError(
+        e,
+        title: 'Pendaftaran Gagal',
+        defaultMessage:
+            'Gagal menyelesaikan pendaftaran akun. Silakan periksa kembali data Anda.',
+      );
     } finally {
       isLoading.value = false;
     }
-  }
-
-  void _showMessage(String message) {
-    Get.snackbar('Informasi', message, snackPosition: SnackPosition.TOP);
   }
 
   @override

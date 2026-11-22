@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import '../../../utils/app_snackbar.dart';
 import '../models/riwayat_model.dart';
 import '../services/riwayat_service.dart';
 
@@ -77,21 +78,21 @@ class RiwayatController extends GetxController {
   void bukaAksi(RiwayatModel item) {
     switch (item.status) {
       case 'Diterima':
-        Get.snackbar(
+        AppSnackbar.success(
           'Selamat!',
-          'Lamaran ${item.posisi} diterima.',
+          'Lamaran Anda untuk posisi ${item.posisi} telah diterima oleh perusahaan.',
         );
         break;
       case 'Menunggu':
-        Get.snackbar(
-          'Lamaran sedang diproses',
-          'Perusahaan belum memberikan keputusan.',
+        AppSnackbar.info(
+          'Dalam Proses',
+          'Lamaran untuk posisi ${item.posisi} sedang ditinjau oleh pihak perusahaan.',
         );
         break;
       case 'Ditolak':
-        Get.snackbar(
-          'Status lamaran',
-          'Kamu bisa mencoba peluang kerja lainnya.',
+        AppSnackbar.info(
+          'Status Lamaran',
+          'Lamaran untuk posisi ${item.posisi} belum berhasil. Jangan berkecil hati, coba peluang lainnya ya!',
         );
         break;
     }

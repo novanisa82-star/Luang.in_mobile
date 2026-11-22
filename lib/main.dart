@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
           seedColor: PalleteColor.primaryPurple,
         ),
-        textTheme: GoogleFonts.plusJakartaSansTextTheme(),
+        textTheme: ThemeData.light().textTheme,
       ),
       home: const SplashScreen(),
       getPages: [

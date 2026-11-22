@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/providers/auth_provider.dart';
+import '../../../utils/app_snackbar.dart';
+import 'package:luang_in/core/config/api_config.dart';
 
 class AuthController extends GetxController {
   final AuthProvider authProvider;
@@ -30,24 +32,44 @@ class AuthController extends GetxController {
     final email = loginEmailController.text.trim();
     final password = loginPasswordController.text;
 
+    debugPrint('==================================================');
+    debugPrint('🚀 [AUTH LOGIN TRIGGERED]');
+    debugPrint('📧 Email Input: "$email"');
+    debugPrint('🔑 Password length: ${password.length} karakter');
+    debugPrint('🌐 Target Endpoint: ${ApiConfig.login}');
+    debugPrint('==================================================');
+
     if (email.isEmpty || password.isEmpty) {
-      _showMessage('Email dan password wajib diisi.');
+      debugPrint('⚠️ [LOGIN DIBATALKAN] Email atau password kosong.');
+      AppSnackbar.warning('Perhatian', 'Email dan kata sandi wajib diisi.');
       return;
     }
 
     if (!_isValidEmail(email)) {
-      _showMessage('Format email tidak benar.');
+      debugPrint('⚠️ [LOGIN DIBATALKAN] Format email tidak valid: "$email"');
+      AppSnackbar.warning('Perhatian', 'Format alamat email belum sesuai.');
       return;
     }
 
     try {
       isLoading.value = true;
 
-      await authProvider.login(email: email, password: password);
+      debugPrint('⏳ [MENGIRIM REQUEST KE BACKEND...]');
+      final user = await authProvider.login(email: email, password: password);
 
+      debugPrint('🎉 [LOGIN BERHASIL!] User: ${user.name} (${user.email})');
       Get.offAllNamed('/main');
-    } catch (e) {
-      _showMessage('Login gagal. Periksa email dan password kamu.');
+    } catch (e, stack) {
+      debugPrint('❌ [LOGIN GAGAL - DETAIL ERROR]');
+      debugPrint('⚠️ Pesan Error: $e');
+      debugPrint('🔍 Tipe Error: ${e.runtimeType}');
+      debugPrint('📜 Stack Trace singkat:\n$stack');
+
+      AppSnackbar.showError(
+        e,
+        title: 'Gagal Masuk',
+        defaultMessage: 'Email atau kata sandi tidak sesuai. Silakan periksa kembali.',
+      );
     } finally {
       isLoading.value = false;
     }
@@ -60,22 +82,22 @@ class AuthController extends GetxController {
     final confirmPassword = confirmPasswordController.text;
 
     if (name.isEmpty || email.isEmpty || password.isEmpty) {
-      _showMessage('Nama, email, dan password wajib diisi.');
+      AppSnackbar.warning('Perhatian', 'Nama lengkap, email, dan kata sandi wajib diisi.');
       return;
     }
 
     if (!_isValidEmail(email)) {
-      _showMessage('Format email tidak benar.');
+      AppSnackbar.warning('Perhatian', 'Format alamat email belum sesuai.');
       return;
     }
 
     if (password.length < 8) {
-      _showMessage('Password minimal 8 karakter.');
+      AppSnackbar.warning('Perhatian', 'Kata sandi minimal terdiri dari 8 karakter.');
       return;
     }
 
     if (password != confirmPassword) {
-      _showMessage('Konfirmasi password tidak sama.');
+      AppSnackbar.warning('Perhatian', 'Konfirmasi kata sandi tidak cocok.');
       return;
     }
 
@@ -90,7 +112,6 @@ class AuthController extends GetxController {
     );
   }
 
-
   void togglePassword() {
     obscurePassword.toggle();
   }
@@ -100,11 +121,7 @@ class AuthController extends GetxController {
   }
 
   Future<void> loginWithGoogle() async {
-    _showMessage('Login Google belum dihubungkan ke autentikasi.');
-  }
-
-  void _showMessage(String message) {
-    Get.snackbar('Informasi', message, snackPosition: SnackPosition.TOP);
+    AppSnackbar.info('Segera Hadir', 'Fitur masuk dengan Google sedang dalam proses integrasi.');
   }
 
   @override
