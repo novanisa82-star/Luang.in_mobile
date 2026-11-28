@@ -1,10 +1,14 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:luang_in/core/config/api_config.dart';
 import 'package:luang_in/core/services/api_service.dart';
+import 'package:luang_in/core/services/storage_service.dart';
 import 'package:luang_in/data/models/home_model.dart';
 import 'package:luang_in/modules/riwayat/controllers/riwayat_controller.dart';
 import 'package:luang_in/utils/app_snackbar.dart';
+import 'package:luang_in/utils/document_helper.dart';
 import 'package:luang_in/utils/pallete_color.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -25,6 +29,16 @@ class DetailController extends GetxController {
   final RxnString errorMessage = RxnString();
   final Rxn<HomeModel> job = Rxn<HomeModel>();
 
+  // Form Data Pribadi & Upload CV untuk Melamar
+  final namaController = TextEditingController();
+  final whatsappController = TextEditingController();
+  final domisiliController = TextEditingController();
+  final catatanController = TextEditingController();
+
+  final RxnString selectedCvPath = RxnString();
+  final RxnString selectedCvName = RxnString();
+  final RxnInt selectedCvSize = RxnInt();
+
   int? get effectiveJobId => initialJobId ?? initialJob?.id;
 
   double? get effectiveRating => job.value?.rating ?? initialRating;
@@ -33,9 +47,38 @@ class DetailController extends GetxController {
   void onInit() {
     super.onInit();
     job.value = initialJob;
+    prefillUserData();
     if (effectiveJobId != null && effectiveJobId! > 0) {
       fetchJobDetail();
     }
+  }
+
+  @override
+  void onClose() {
+    namaController.dispose();
+    whatsappController.dispose();
+    domisiliController.dispose();
+    catatanController.dispose();
+    super.onClose();
+  }
+
+  void prefillUserData() {
+    try {
+      if (Get.isRegistered<StorageService>()) {
+        final user = Get.find<StorageService>().getUser();
+        if (user != null) {
+          if (namaController.text.isEmpty) {
+            namaController.text = user['name']?.toString() ?? '';
+          }
+          if (whatsappController.text.isEmpty) {
+            whatsappController.text = user['whatsapp']?.toString() ?? '';
+          }
+          if (domisiliController.text.isEmpty) {
+            domisiliController.text = user['domisili']?.toString() ?? '';
+          }
+        }
+      }
+    } catch (_) {}
   }
 
   Future<void> fetchJobDetail() async {
@@ -79,89 +122,183 @@ class DetailController extends GetxController {
     );
   }
 
-  Future<void> confirmAndApply(BuildContext context) async {
+  Future<void> pickCvFile() async {
+    try {
+      final files = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'doc', 'docx'],
+      );
+
+      if (files.isNotEmpty) {
+        final file = files.first;
+        if (file.path != null) {
+          final size = file.lengthSync() ?? await file.length();
+          selectedCvPath.value = file.path;
+          selectedCvName.value = file.name;
+          selectedCvSize.value = size;
+        }
+      }
+    } catch (e) {
+      AppSnackbar.error(
+        'Gagal Memilih CV',
+        'Terjadi kendala saat memilih berkas CV: $e',
+      );
+    }
+  }
+
+  void clearSelectedCv() {
+    selectedCvPath.value = null;
+    selectedCvName.value = null;
+    selectedCvSize.value = null;
+  }
+
+  Future<void> submitApplication(BuildContext context) async {
     final currentJob = job.value;
     if (currentJob == null || isApplying.value || currentJob.sudahMelamar) {
       return;
     }
 
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        title: const Text(
-          'Kirim Lamaran?',
-          style: TextStyle(
-            color: PalleteColor.textDark,
-            fontWeight: FontWeight.w800,
-            fontSize: 17,
-          ),
-        ),
-        content: Text(
-          'Apakah Anda yakin ingin melamar posisi "${currentJob.judul}" di ${currentJob.namaPt}?',
-          style: const TextStyle(
-            color: PalleteColor.textGrey,
-            fontSize: 14,
-            height: 1.45,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text(
-              'Batal',
-              style: TextStyle(color: PalleteColor.textGrey),
-            ),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: PalleteColor.primaryPurple,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text(
-              'Ya, Lamar',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
-      ),
-    );
+    final nama = namaController.text.trim();
+    final whatsapp = whatsappController.text.trim();
+    final domisili = domisiliController.text.trim();
+    final catatan = catatanController.text.trim();
+    final cvPath = selectedCvPath.value;
 
-    if (confirmed != true) return;
+    if (nama.isEmpty) {
+      AppSnackbar.warning('Data Belum Lengkap', 'Nama lengkap wajib diisi.');
+      return;
+    }
+
+    if (whatsapp.isEmpty) {
+      AppSnackbar.warning(
+        'Data Belum Lengkap',
+        'Nomor WhatsApp aktif wajib diisi agar PT dapat menghubungi Anda.',
+      );
+      return;
+    }
+
+    if (cvPath == null || cvPath.isEmpty) {
+      AppSnackbar.warning(
+        'CV Belum Diunggah',
+        'Silakan unggah berkas CV Anda (PDF/DOC/DOCX) terlebih dahulu.',
+      );
+      return;
+    }
 
     isApplying.value = true;
 
     try {
       final apiService = Get.find<ApiService>();
-      final response = await apiService.postAuthenticated(
+      final response = await apiService.postMultipartAuthenticated(
         ApiConfig.lamarPekerjaan(currentJob.id),
-        data: {},
+        fields: {
+          'nama': nama,
+          'whatsapp': whatsapp,
+          'domisili': domisili,
+          'catatan': catatan,
+        },
+        filePath: cvPath,
+        fileFieldName: 'cv',
       );
 
-      AppSnackbar.success(
-        'Lamaran Terkirim',
-        response['message']?.toString() ??
-            'Lamaran berhasil dikirim! Menunggu konfirmasi perusahaan.',
-      );
+      // Tutup bottom sheet form terlebih dahulu
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
+
+      clearSelectedCv();
+      catatanController.clear();
 
       await fetchJobDetail();
 
       if (Get.isRegistered<RiwayatController>()) {
         Get.find<RiwayatController>().muatUlang();
       }
+
+      // Gunakan Get.dialog agar tidak bergantung pada sheetContext yang sudah ditutup
+      _showSuccessDialog(
+        response['message']?.toString() ??
+            'Lamaran dan CV Anda berhasil dikirim! Menunggu konfirmasi perusahaan.',
+      );
     } catch (e) {
       AppSnackbar.showError(
         e,
-        title: 'Gagal Melamar',
+        title: 'Gagal Mengirim Lamaran',
         defaultMessage: 'Tidak dapat mengirim lamaran. Silakan coba lagi.',
       );
     } finally {
       isApplying.value = false;
     }
+  }
+
+  void _showSuccessDialog(String message) {
+    Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        backgroundColor: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 24, 24, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: 150,
+                height: 150,
+                child: Lottie.asset(
+                  'assets/lottie/success.json',
+                  repeat: false,
+                ),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Lamaran Terkirim!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: PalleteColor.textDark,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: PalleteColor.textGrey,
+                  height: 1.45,
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () => Get.back(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: PalleteColor.primaryPurple,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: const Text(
+                    'Oke, Mengerti',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+  }
+
+  String formatCvSize(int? bytes) {
+    if (bytes == null) return '';
+    return DocumentHelper.formatFileSize(bytes);
   }
 
   String formatRupiah(String rawUpah) {
@@ -232,6 +369,46 @@ class DetailController extends GetxController {
         e,
         title: 'Gagal Membuka Google Maps',
         defaultMessage: 'Pastikan aplikasi Google Maps atau browser terpasang.',
+      );
+    }
+  }
+
+  Future<void> openWhatsappPt() async {
+    final currentJob = job.value;
+    if (currentJob == null) return;
+
+    final rawPhone = currentJob.whatsappPt;
+    if (rawPhone == null || rawPhone.isEmpty) {
+      AppSnackbar.warning(
+        'Nomor WhatsApp Tidak Tersedia',
+        'Perusahaan belum mencantumkan nomor WhatsApp aktif.',
+      );
+      return;
+    }
+
+    String clean = rawPhone.replaceAll(RegExp(r'[^0-9]'), '');
+    if (clean.startsWith('0')) {
+      clean = '62${clean.substring(1)}';
+    }
+
+    final text = Uri.encodeComponent(
+      'Halo ${currentJob.namaPt}, saya pelamar yang diterima untuk posisi "${currentJob.judul}" di Luang.In. Mohon arahan selanjutnya.',
+    );
+    final url = Uri.parse('https://wa.me/$clean?text=$text');
+
+    try {
+      final launched = await launchUrl(url, mode: LaunchMode.externalApplication);
+      if (!launched) {
+        AppSnackbar.warning(
+          'Gagal Membuka WhatsApp',
+          'Pastikan aplikasi WhatsApp terpasang di perangkat Anda.',
+        );
+      }
+    } catch (e) {
+      AppSnackbar.showError(
+        e,
+        title: 'Gagal Membuka WhatsApp',
+        defaultMessage: 'Tidak dapat membuka WhatsApp.',
       );
     }
   }

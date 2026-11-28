@@ -5,7 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/riwayat_model.dart';
 import '../controllers/riwayat_controller.dart';
 import 'detail_riwayat_screen.dart';
+import 'package:luang_in/utils/app_snackbar.dart';
 import 'package:luang_in/utils/pallete_color.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RiwayatScreen extends StatefulWidget {
   const RiwayatScreen({super.key});
@@ -638,12 +640,78 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
                 ),
               ),
               const SizedBox(width: 8),
+              if (item.status.toLowerCase() == 'diterima' &&
+                  item.whatsappPt != null &&
+                  item.whatsappPt!.isNotEmpty) ...[
+                _buildWhatsappButton(item),
+                const SizedBox(width: 6),
+              ],
               _buildActionButton(item),
             ],
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildWhatsappButton(RiwayatModel item) {
+    return Material(
+      color: const Color(0xFFDCFCE7),
+      borderRadius: BorderRadius.circular(13),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(13),
+        onTap: () => _openWhatsappPt(item),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 11),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.chat_rounded, size: 14, color: Color(0xFF15803D)),
+              SizedBox(width: 4),
+              Text(
+                'WA PT',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF15803D),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openWhatsappPt(RiwayatModel item) async {
+    final raw = item.whatsappPt;
+    if (raw == null || raw.isEmpty) return;
+
+    String clean = raw.replaceAll(RegExp(r'[^0-9]'), '');
+    if (clean.startsWith('0')) {
+      clean = '62${clean.substring(1)}';
+    }
+
+    final text = Uri.encodeComponent(
+      'Halo ${item.perusahaan}, saya pelamar yang diterima untuk posisi "${item.posisi}" di Luang.In. Mohon arahan selanjutnya.',
+    );
+    final url = Uri.parse('https://wa.me/$clean?text=$text');
+
+    try {
+      final launched = await launchUrl(url, mode: LaunchMode.externalApplication);
+      if (!launched) {
+        AppSnackbar.warning(
+          'Gagal Membuka WhatsApp',
+          'Pastikan aplikasi WhatsApp terpasang di perangkat Anda.',
+        );
+      }
+    } catch (e) {
+      AppSnackbar.showError(
+        e,
+        title: 'Gagal Membuka WhatsApp',
+        defaultMessage: 'Tidak dapat membuka WhatsApp.',
+      );
+    }
   }
 
   // DETAIL BUTTON

@@ -162,6 +162,58 @@ class ApiService extends GetxService {
     }
   }
 
+  Future<Map<String, dynamic>> postMultipartAuthenticated(
+    String url, {
+    Map<String, String> fields = const {},
+    String? filePath,
+    String fileFieldName = 'cv',
+  }) async {
+    final token = storageService.getToken();
+
+    if (token == null || token.isEmpty) {
+      throw Exception('Sesi login tidak ditemukan. Silakan login kembali.');
+    }
+
+    debugPrint('📤 [MULTIPART POST] Mengirim ke $url');
+    try {
+      final request = http.MultipartRequest('POST', Uri.parse(url));
+
+      request.headers.addAll({
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+
+      request.fields.addAll(fields);
+
+      if (filePath != null && filePath.isNotEmpty) {
+        request.files.add(
+          await http.MultipartFile.fromPath(fileFieldName, filePath),
+        );
+      }
+
+      final streamedResponse = await request.send().timeout(
+        const Duration(seconds: 30),
+      );
+      final response = await http.Response.fromStream(streamedResponse);
+
+      debugPrint('📡 [MULTIPART RESPONSE] Status: ${response.statusCode}');
+      debugPrint('   Body: ${response.body}');
+
+      return _handleResponse(response);
+    } on http.ClientException catch (e) {
+      debugPrint('💥 [MULTIPART CLIENT EXCEPTION] $e');
+      throw Exception(
+        'Tidak dapat terhubung ke server. Pastikan server aktif dan periksa koneksi Anda.',
+      );
+    } on TimeoutException catch (e) {
+      debugPrint('⏳ [MULTIPART TIMEOUT] $e');
+      throw Exception('Waktu pengiriman habis. Silakan coba kembali.');
+    } catch (e) {
+      if (e is Exception) rethrow;
+      throw Exception('Gagal mengirim data. Silakan coba kembali.');
+    }
+  }
+
   Future<Map<String, String>> _headers({bool authenticated = false}) async {
     final headers = <String, String>{
       'Accept': 'application/json',

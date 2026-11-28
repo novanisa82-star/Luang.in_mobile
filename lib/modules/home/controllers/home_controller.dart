@@ -90,6 +90,8 @@ class HomeController extends GetxController {
             : 'Daily',
         'rating': p.rating,
         'total_rating': p.totalRating,
+        'kuota': p.kuota,
+        'total_diterima': p.totalDiterima,
         'title': p.judul,
         'distance': '',
         'duration': p.durasi,

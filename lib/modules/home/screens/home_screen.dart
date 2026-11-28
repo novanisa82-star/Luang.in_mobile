@@ -767,6 +767,9 @@ class HomeScreen extends StatelessWidget {
                             gig['nama_pt']?.toString() ?? 'Perusahaan';
                         final price = gig['price']?.toString() ?? 'Rp0';
                         final type = gig['type']?.toString() ?? 'Daily';
+                        final kuota = gig['kuota'] as int? ?? 1;
+                        final totalDiterima =
+                            gig['total_diterima'] as int? ?? 0;
 
                         return Material(
                               color: Colors.white,
@@ -903,34 +906,84 @@ class HomeScreen extends StatelessWidget {
                                                   ),
                                                 ),
                                                 const SizedBox(height: 10),
-                                                Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Container(
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                          horizontal: 10,
-                                                          vertical: 6,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: const Color(
-                                                        0xFFF0E8FF,
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            8,
+                                                Wrap(
+                                                  spacing: 6,
+                                                  runSpacing: 6,
+                                                  children: [
+                                                    Container(
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            horizontal: 10,
+                                                            vertical: 6,
                                                           ),
-                                                    ),
-                                                    child: Text(
-                                                      type,
-                                                      style: TextStyle(
-                                                        color: purple,
-                                                        fontSize: 10,
-                                                        fontWeight:
-                                                            FontWeight.w800,
+                                                      decoration: BoxDecoration(
+                                                        color: const Color(
+                                                          0xFFF0E8FF,
+                                                        ),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              8,
+                                                            ),
+                                                      ),
+                                                      child: Text(
+                                                        type,
+                                                        style: TextStyle(
+                                                          color: purple,
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w800,
+                                                        ),
                                                       ),
                                                     ),
-                                                  ),
+                                                    Container(
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            horizontal: 9,
+                                                            vertical: 6,
+                                                          ),
+                                                      decoration: BoxDecoration(
+                                                        color: const Color(
+                                                          0xFFEFF6FF,
+                                                        ),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              8,
+                                                            ),
+                                                      ),
+                                                      child: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          const Icon(
+                                                            Icons
+                                                                .group_outlined,
+                                                            size: 12,
+                                                            color: Color(
+                                                              0xFF1D4ED8,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 4,
+                                                          ),
+                                                          Text(
+                                                            totalDiterima > 0
+                                                                ? '$totalDiterima/$kuota diterima'
+                                                                : 'Butuh $kuota orang',
+                                                            style:
+                                                                const TextStyle(
+                                                                  color: Color(
+                                                                    0xFF1D4ED8,
+                                                                  ),
+                                                                  fontSize: 10,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w700,
+                                                                ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),

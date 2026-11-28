@@ -1,31 +1,37 @@
 
 class RiwayatModel {
   final int id;
+  final int? pekerjaanId;
   final String posisi;
   final String perusahaan;
   final String status;
   final String informasi;
   final int? upah;
+  final String? whatsappPt;
   final DateTime tanggal;
 
   const RiwayatModel({
     required this.id,
+    this.pekerjaanId,
     required this.posisi,
     required this.perusahaan,
     required this.status,
     required this.informasi,
     required this.tanggal,
     this.upah,
+    this.whatsappPt,
   });
 
   factory RiwayatModel.fromJson(Map<String, dynamic> json) {
     return RiwayatModel(
       id: int.tryParse(json['id'].toString()) ?? 0,
+      pekerjaanId: int.tryParse('${json['pekerjaan_id'] ?? ''}'),
       posisi: json['posisi']?.toString() ?? 'Lowongan',
       perusahaan: json['perusahaan']?.toString() ?? 'Perusahaan',
       status: _normalisasiStatus(json['status']?.toString()),
       informasi: json['informasi']?.toString() ?? '',
       upah: _parseUpah(json['upah']),
+      whatsappPt: json['whatsapp_pt']?.toString(),
       tanggal: DateTime.tryParse(json['tanggal']?.toString() ?? '')
           ?? DateTime.now(),
     );

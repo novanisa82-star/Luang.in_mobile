@@ -242,6 +242,10 @@ class DetailScreen extends StatelessWidget {
                           Icons.people_outline_rounded,
                           '${currentJob.totalPelamar} Pelamar',
                         ),
+                        _buildInfo(
+                          Icons.group_add_outlined,
+                          'Kuota: ${currentJob.kuota} Orang (${currentJob.totalDiterima} Diterima)',
+                        ),
                       ],
                     ).animate().fadeIn(delay: 150.ms),
 
@@ -741,16 +745,30 @@ class DetailScreen extends StatelessWidget {
                           child: SizedBox(
                             height: 58,
                             child: ElevatedButton(
-                              onPressed:
-                                  (currentJob.sudahMelamar ||
-                                      currentJob.statusLoker != 'aktif' ||
-                                      isApplying)
+                              onPressed: isApplying
                                   ? null
-                                  : () => controller.confirmAndApply(context),
+                                  : (currentJob.sudahMelamar &&
+                                          currentJob.statusLamaran
+                                                  ?.toLowerCase() ==
+                                              'diterima')
+                                      ? controller.openWhatsappPt
+                                      : (currentJob.sudahMelamar ||
+                                              currentJob.statusLoker != 'aktif')
+                                          ? null
+                                          : () => _showApplyBottomSheet(
+                                                context,
+                                                controller,
+                                                currentJob,
+                                              ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: currentJob.sudahMelamar
+                                backgroundColor: (currentJob.sudahMelamar &&
+                                        currentJob.statusLamaran
+                                                ?.toLowerCase() ==
+                                            'diterima')
                                     ? const Color(0xFF16A34A)
-                                    : PalleteColor.primaryPurple,
+                                    : currentJob.sudahMelamar
+                                        ? const Color(0xFF16A34A)
+                                        : PalleteColor.primaryPurple,
                                 disabledBackgroundColor: currentJob.sudahMelamar
                                     ? const Color(0xFFDCFCE7)
                                     : Colors.grey.shade300,
@@ -758,7 +776,12 @@ class DetailScreen extends StatelessWidget {
                                 disabledForegroundColor: currentJob.sudahMelamar
                                     ? const Color(0xFF15803D)
                                     : Colors.grey.shade600,
-                                elevation: currentJob.sudahMelamar ? 0 : 3,
+                                elevation: (currentJob.sudahMelamar &&
+                                        currentJob.statusLamaran
+                                                ?.toLowerCase() !=
+                                            'diterima')
+                                    ? 0
+                                    : 3,
                                 shadowColor: PalleteColor.primaryPurple
                                     .withOpacity(0.25),
                                 shape: RoundedRectangleBorder(
@@ -778,16 +801,33 @@ class DetailScreen extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
+                                        if (currentJob.sudahMelamar &&
+                                            currentJob.statusLamaran
+                                                    ?.toLowerCase() ==
+                                                'diterima') ...[
+                                          const Icon(
+                                            Icons.chat_rounded,
+                                            size: 19,
+                                          ),
+                                          const SizedBox(width: 7),
+                                        ],
                                         Flexible(
                                           child: Text(
-                                            currentJob.sudahMelamar
-                                                ? controller.statusLamaranLabel(
-                                                    currentJob.statusLamaran,
-                                                  )
-                                                : (currentJob.statusLoker !=
-                                                          'aktif'
-                                                      ? 'Loker Ditutup'
-                                                      : 'Lamar Sekarang'),
+                                            (currentJob.sudahMelamar &&
+                                                    currentJob.statusLamaran
+                                                            ?.toLowerCase() ==
+                                                        'diterima')
+                                                ? 'Hubungi PT (WA)'
+                                                : currentJob.sudahMelamar
+                                                    ? controller
+                                                        .statusLamaranLabel(
+                                                          currentJob
+                                                              .statusLamaran,
+                                                        )
+                                                    : (currentJob.statusLoker !=
+                                                              'aktif'
+                                                          ? 'Loker Ditutup'
+                                                          : 'Lamar Sekarang'),
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: const TextStyle(
@@ -978,6 +1018,342 @@ class DetailScreen extends StatelessWidget {
           const SizedBox(height: 16),
           child,
         ],
+      ),
+    );
+  }
+
+  void _showApplyBottomSheet(
+    BuildContext context,
+    DetailController controller,
+    HomeModel currentJob,
+  ) {
+    controller.prefillUserData();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(sheetContext).viewInsets.bottom,
+          ),
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(sheetContext).size.height * 0.88,
+            ),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(26)),
+            ),
+            child: SafeArea(
+              top: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 12),
+                  Container(
+                    width: 42,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Lamar Pekerjaan',
+                                style: TextStyle(
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w800,
+                                  color: PalleteColor.textDark,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                '${currentJob.judul} · ${currentJob.namaPt}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: PalleteColor.textGrey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close_rounded),
+                          onPressed: () => Navigator.of(sheetContext).pop(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(height: 1),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildFormLabel('Nama Lengkap *'),
+                          _buildTextField(
+                            controller: controller.namaController,
+                            hint: 'Masukkan nama lengkap Anda',
+                            icon: Icons.person_outline_rounded,
+                          ),
+                          const SizedBox(height: 14),
+                          _buildFormLabel('Nomor WhatsApp Aktif *'),
+                          _buildTextField(
+                            controller: controller.whatsappController,
+                            hint: 'Contoh: 081234567890',
+                            icon: Icons.phone_outlined,
+                            keyboardType: TextInputType.phone,
+                          ),
+                          const SizedBox(height: 14),
+                          _buildFormLabel('Domisili / Alamat Singkat'),
+                          _buildTextField(
+                            controller: controller.domisiliController,
+                            hint: 'Contoh: Jakarta Selatan',
+                            icon: Icons.location_on_outlined,
+                          ),
+                          const SizedBox(height: 14),
+                          _buildFormLabel('Catatan untuk Perusahaan (Opsional)'),
+                          _buildTextField(
+                            controller: controller.catatanController,
+                            hint: 'Ceritakan singkat kesiapan atau pengalaman Anda',
+                            icon: Icons.notes_rounded,
+                            maxLines: 3,
+                          ),
+                          const SizedBox(height: 16),
+                          _buildFormLabel('Unggah Berkas CV (PDF/DOC/DOCX) *'),
+                          Obx(() {
+                            final cvPath = controller.selectedCvPath.value;
+                            final cvName = controller.selectedCvName.value;
+                            final cvSize = controller.selectedCvSize.value;
+
+                            if (cvPath == null) {
+                              return InkWell(
+                                borderRadius: BorderRadius.circular(16),
+                                onTap: controller.pickCvFile,
+                                child: Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 22,
+                                    horizontal: 16,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: PalleteColor.lightPurple.withOpacity(
+                                      0.55,
+                                    ),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(
+                                      color: PalleteColor.primaryPurple
+                                          .withOpacity(0.35),
+                                      width: 1.2,
+                                    ),
+                                  ),
+                                  child: const Column(
+                                    children: [
+                                      Icon(
+                                        Icons.upload_file_rounded,
+                                        color: PalleteColor.primaryPurple,
+                                        size: 32,
+                                      ),
+                                      SizedBox(height: 8),
+                                      Text(
+                                        'Pilih Berkas CV Anda',
+                                        style: TextStyle(
+                                          color: PalleteColor.primaryPurple,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                      SizedBox(height: 3),
+                                      Text(
+                                        'Format PDF, DOC, atau DOCX (maks. 5 MB)',
+                                        style: TextStyle(
+                                          color: PalleteColor.textGrey,
+                                          fontSize: 11,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+
+                            return Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 12,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF5F0FF),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(
+                                  color: PalleteColor.primaryPurple.withOpacity(
+                                    0.3,
+                                  ),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.description_rounded,
+                                    color: PalleteColor.primaryPurple,
+                                    size: 26,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          cvName ?? 'Berkas CV',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            color: PalleteColor.textDark,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                        if (cvSize != null)
+                                          Text(
+                                            controller.formatCvSize(cvSize),
+                                            style: const TextStyle(
+                                              color: PalleteColor.textGrey,
+                                              fontSize: 11,
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.close_rounded,
+                                      size: 20,
+                                    ),
+                                    color: PalleteColor.textGrey,
+                                    onPressed: controller.clearSelectedCv,
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                          const SizedBox(height: 22),
+                          Obx(() {
+                            final busy = controller.isApplying.value;
+                            return SizedBox(
+                              width: double.infinity,
+                              height: 54,
+                              child: ElevatedButton(
+                                onPressed: busy
+                                    ? null
+                                    : () => controller.submitApplication(
+                                          sheetContext,
+                                        ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: PalleteColor.primaryPurple,
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                                child: busy
+                                    ? const SizedBox(
+                                        width: 22,
+                                        height: 22,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2.5,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : const Text(
+                                        'Kirim Lamaran & CV',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildFormLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          color: PalleteColor.textDark,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hint,
+    required IconData icon,
+    TextInputType keyboardType = TextInputType.text,
+    int maxLines = 1,
+  }) {
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      maxLines: maxLines,
+      style: const TextStyle(fontSize: 13, color: PalleteColor.textDark),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: const TextStyle(fontSize: 12, color: PalleteColor.textGrey),
+        prefixIcon: maxLines == 1
+            ? Icon(icon, size: 20, color: PalleteColor.primaryPurple)
+            : null,
+        filled: true,
+        fillColor: PalleteColor.inputBackground,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 12,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: PalleteColor.borderColor),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(color: PalleteColor.borderColor),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(
+            color: PalleteColor.primaryPurple,
+            width: 1.4,
+          ),
+        ),
       ),
     );
   }
