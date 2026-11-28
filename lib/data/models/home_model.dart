@@ -79,4 +79,33 @@ class HomeModel {
       updatedAt: DateTime.tryParse('${json['updated_at'] ?? ''}'),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'user_id': userId,
+      'judul': judul,
+      'deskripsi': deskripsi,
+      'latitude': latitude,
+      'longitude': longitude,
+      'upah': upah,
+      'durasi': durasi,
+      'status_moderasi': statusModerasi,
+      'status_loker': statusLoker,
+      'nama_pt': namaPt,
+      'rating': rating,
+      'total_rating': totalRating,
+      'kuota': kuota,
+      'total_diterima': totalDiterima,
+      'total_pelamar': totalPelamar,
+      'sisa_waktu': sisaWaktu,
+      'deadline_pendaftaran': deadlinePendaftaran?.toIso8601String(),
+      'sudah_melamar': sudahMelamar,
+      'status_lamaran': statusLamaran,
+      'catatan_penolakan': catatanPenolakan,
+      'whatsapp_pt': whatsappPt,
+      'created_at': createdAt?.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
+    };
+  }
 }

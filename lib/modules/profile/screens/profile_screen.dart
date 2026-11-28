@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luang_in/modules/profile/controllers/profile_controller.dart';
 import 'package:luang_in/modules/profile/screens/informasi_pribadi_screen.dart';
+import 'package:luang_in/modules/profile/screens/saved_jobs_screen.dart';
 import 'package:luang_in/core/services/storage_service.dart';
 import 'package:luang_in/modules/profile/screens/skill_profile_screen.dart';
 import 'package:luang_in/utils/app_snackbar.dart';
@@ -202,6 +203,17 @@ class ProfileScreen extends StatelessWidget {
                       onTap: () {
                         Get.to(
                           () => SkillProfileScreen(),
+                          transition: Transition.rightToLeft,
+                        );
+                      },
+                    ),
+                    _menuItem(
+                      icon: Icons.bookmark_outline_rounded,
+                      title: 'Lowongan tersimpan',
+                      subtitle: 'Lihat daftar loker favorit kamu',
+                      onTap: () {
+                        Get.to(
+                          () => const SavedJobsScreen(),
                           transition: Transition.rightToLeft,
                         );
                       },

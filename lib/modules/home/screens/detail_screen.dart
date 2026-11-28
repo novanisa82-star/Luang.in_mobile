@@ -501,61 +501,78 @@ class DetailScreen extends StatelessWidget {
 
                     const SizedBox(height: 18),
 
-                    // 4. LOKASI DAN KOORDINAT
+                    // 4. WILAYAH DAN LOKASI KERJA
                     _buildSection(
                           icon: Icons.location_on_outlined,
-                          title: 'Koordinat & Lokasi Peta',
+                          title: 'Wilayah & Lokasi Kerja',
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 7,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: PalleteColor.lightPurple,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(
-                                    '${currentJob.latitude.toStringAsFixed(4)}, ${currentJob.longitude.toStringAsFixed(4)}',
-                                    style: const TextStyle(
-                                      color: PalleteColor.primaryPurple,
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w700,
+                              Obx(() {
+                                final dist = controller.distanceText.value;
+                                if (dist.isEmpty) {
+                                  return const SizedBox.shrink();
+                                }
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: PalleteColor.lightPurple,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(
+                                          Icons.near_me_rounded,
+                                          size: 14,
+                                          color: PalleteColor.primaryPurple,
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          dist,
+                                          style: const TextStyle(
+                                            color: PalleteColor.primaryPurple,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ),
-                              ),
-
-                              const SizedBox(height: 14),
+                                );
+                              }),
 
                               Container(
                                 width: double.infinity,
-                                padding: const EdgeInsets.all(12),
+                                padding: const EdgeInsets.all(14),
                                 decoration: BoxDecoration(
                                   color: PalleteColor.inputBackground,
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(14),
                                 ),
                                 child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Icon(
-                                      Icons.my_location_rounded,
-                                      size: 19,
+                                      Icons.location_city_rounded,
+                                      size: 20,
                                       color: PalleteColor.primaryPurple,
                                     ),
                                     const SizedBox(width: 10),
                                     Expanded(
-                                      child: Text(
-                                        'Latitude: ${currentJob.latitude.toStringAsFixed(6)}\n'
-                                        'Longitude: ${currentJob.longitude.toStringAsFixed(6)}',
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          height: 1.7,
-                                          fontWeight: FontWeight.w600,
-                                          color: PalleteColor.textDark,
+                                      child: Obx(
+                                        () => Text(
+                                          controller.locationAddress.value,
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            height: 1.5,
+                                            fontWeight: FontWeight.w600,
+                                            color: PalleteColor.textDark,
+                                          ),
                                         ),
                                       ),
                                     ),

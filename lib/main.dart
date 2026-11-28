@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:luang_in/core/services/storage_service.dart';
+import 'package:luang_in/core/services/saved_jobs_service.dart';
 import 'package:luang_in/core/services/api_service.dart';
 import 'package:luang_in/modules/ai_chat/controllers/ai_chat_controller.dart';
 import 'package:luang_in/modules/ai_chat/screens/ai_chat_screen.dart';
@@ -40,6 +41,11 @@ Future<void> main() async {
 
   Get.put<RiwayatService>(
     RiwayatService(),
+    permanent: true,
+  );
+
+  Get.put<SavedJobsService>(
+    SavedJobsService(),
     permanent: true,
   );
 

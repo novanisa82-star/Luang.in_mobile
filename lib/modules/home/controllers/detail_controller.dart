@@ -1,11 +1,15 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:luang_in/core/config/api_config.dart';
 import 'package:luang_in/core/services/api_service.dart';
+import 'package:luang_in/core/services/saved_jobs_service.dart';
 import 'package:luang_in/core/services/storage_service.dart';
 import 'package:luang_in/data/models/home_model.dart';
+import 'package:luang_in/modules/home/controllers/location_controller.dart';
 import 'package:luang_in/modules/riwayat/controllers/riwayat_controller.dart';
 import 'package:luang_in/utils/app_snackbar.dart';
 import 'package:luang_in/utils/document_helper.dart';
@@ -28,6 +32,8 @@ class DetailController extends GetxController {
   final RxBool isApplying = false.obs;
   final RxnString errorMessage = RxnString();
   final Rxn<HomeModel> job = Rxn<HomeModel>();
+  final RxString locationAddress = 'Memuat wilayah...'.obs;
+  final RxString distanceText = ''.obs;
 
   // Form Data Pribadi & Upload CV untuk Melamar
   final namaController = TextEditingController();
@@ -48,6 +54,8 @@ class DetailController extends GetxController {
     super.onInit();
     job.value = initialJob;
     prefillUserData();
+    _syncSavedState();
+    resolveLocationName();
     if (effectiveJobId != null && effectiveJobId! > 0) {
       fetchJobDetail();
     }
@@ -97,6 +105,8 @@ class DetailController extends GetxController {
       final data = response['data'];
       if (data is Map<String, dynamic>) {
         job.value = HomeModel.fromJson(data);
+        _syncSavedState();
+        resolveLocationName();
       }
     } catch (e) {
       if (job.value == null) {
@@ -107,19 +117,91 @@ class DetailController extends GetxController {
     }
   }
 
-  void toggleSave(BuildContext context) {
-    isSaved.value = !isSaved.value;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          isSaved.value
-              ? 'Lowongan berhasil disimpan'
-              : 'Lowongan dihapus dari simpanan',
+  void _syncSavedState() {
+    final currentJob = job.value;
+    if (currentJob == null) return;
+    if (Get.isRegistered<SavedJobsService>()) {
+      isSaved.value = Get.find<SavedJobsService>().isSaved(currentJob.id);
+    }
+  }
+
+  Future<void> resolveLocationName() async {
+    final currentJob = job.value;
+    if (currentJob == null) return;
+
+    final lat = currentJob.latitude;
+    final lng = currentJob.longitude;
+
+    if (lat == 0 && lng == 0) {
+      locationAddress.value = 'Wilayah pekerjaan belum ditentukan';
+      distanceText.value = '';
+      return;
+    }
+
+    if (Get.isRegistered<LocationController>()) {
+      final pos = Get.find<LocationController>().currentPosition.value;
+      if (pos != null) {
+        final meters = Geolocator.distanceBetween(
+          pos.latitude,
+          pos.longitude,
+          lat,
+          lng,
+        );
+        final km = meters / 1000.0;
+        distanceText.value = '${km.toStringAsFixed(1)} km dari lokasi Anda';
+      }
+    }
+
+    try {
+      final places = await placemarkFromCoordinates(lat, lng);
+      if (places.isNotEmpty) {
+        final p = places.first;
+        final parts = <String>[
+          if (p.subLocality != null && p.subLocality!.isNotEmpty)
+            'Kel./Desa ${p.subLocality!}',
+          if (p.locality != null && p.locality!.isNotEmpty) p.locality!,
+          if (p.subAdministrativeArea != null &&
+              p.subAdministrativeArea!.isNotEmpty)
+            p.subAdministrativeArea!,
+          if (p.administrativeArea != null &&
+              p.administrativeArea!.isNotEmpty)
+            p.administrativeArea!,
+        ];
+        if (parts.isNotEmpty) {
+          locationAddress.value = parts.join(', ');
+          return;
+        }
+      }
+      locationAddress.value = 'Sekitar Lokasi Perusahaan';
+    } catch (_) {
+      locationAddress.value = 'Sekitar Lokasi Perusahaan';
+    }
+  }
+
+  Future<void> toggleSave(BuildContext context) async {
+    final currentJob = job.value;
+    if (currentJob == null) return;
+
+    if (Get.isRegistered<SavedJobsService>()) {
+      final saved = await Get.find<SavedJobsService>().toggleSave(currentJob);
+      isSaved.value = saved;
+    } else {
+      isSaved.value = !isSaved.value;
+    }
+
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            isSaved.value
+                ? 'Lowongan berhasil disimpan ke daftar favorit'
+                : 'Lowongan dihapus dari simpanan',
+          ),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
         ),
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 2),
-      ),
-    );
+      );
+    }
   }
 
   Future<void> pickCvFile() async {
