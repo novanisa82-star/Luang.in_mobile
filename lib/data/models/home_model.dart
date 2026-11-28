@@ -12,6 +12,11 @@ class HomeModel {
   final String namaPt;
   final double? rating;
   final int totalRating;
+  final int totalPelamar;
+  final String? sisaWaktu;
+  final DateTime? deadlinePendaftaran;
+  final bool sudahMelamar;
+  final String? statusLamaran;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -29,6 +34,11 @@ class HomeModel {
     required this.namaPt,
     required this.rating,
     required this.totalRating,
+    this.totalPelamar = 0,
+    this.sisaWaktu,
+    this.deadlinePendaftaran,
+    this.sudahMelamar = false,
+    this.statusLamaran,
     this.createdAt,
     this.updatedAt,
   });
@@ -48,6 +58,11 @@ class HomeModel {
       namaPt: json['nama_pt']?.toString() ?? 'Perusahaan',
       rating: double.tryParse('${json['rating'] ?? ''}'),
       totalRating: int.tryParse('${json['total_rating'] ?? 0}') ?? 0,
+      totalPelamar: int.tryParse('${json['total_pelamar'] ?? 0}') ?? 0,
+      sisaWaktu: json['sisa_waktu']?.toString(),
+      deadlinePendaftaran: DateTime.tryParse('${json['deadline_pendaftaran'] ?? ''}'),
+      sudahMelamar: json['sudah_melamar'] == true,
+      statusLamaran: json['status_lamaran']?.toString(),
       createdAt: DateTime.tryParse('${json['created_at'] ?? ''}'),
       updatedAt: DateTime.tryParse('${json['updated_at'] ?? ''}'),
     );

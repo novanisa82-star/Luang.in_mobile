@@ -359,27 +359,32 @@ class HomeScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.near_me_rounded,
-                                  color: purple,
-                                  size: 15,
-                                ),
-                                const SizedBox(width: 5),
-                                Obx(
-                                  () => Text(
-                                    locationController.locationName.value,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      color: mutedColor,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
+                            GestureDetector(
+                              onTap: () => locationController.getCurrentLocation(),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.near_me_rounded,
+                                    color: purple,
+                                    size: 15,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Expanded(
+                                    child: Obx(
+                                      () => Text(
+                                        locationController.locationName.value,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          color: mutedColor,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                             const SizedBox(height: 8),
                             const Text(
@@ -752,6 +757,7 @@ class HomeScreen extends StatelessWidget {
                       separatorBuilder: (_, __) => const SizedBox(height: 14),
                       itemBuilder: (context, index) {
                         final gig = list[index];
+                        final jobId = gig['id'] as int?;
                         final rating = gig['rating'] as double?;
                         final totalRating = gig['total_rating'] as int? ?? 0;
 
@@ -768,8 +774,14 @@ class HomeScreen extends StatelessWidget {
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(23),
                                 onTap: () {
+                                  final selectedJob = cnt.pekerjaanList
+                                      .firstWhereOrNull((p) => p.id == jobId);
                                   Get.to(
-                                    () => const DetailScreen(),
+                                    () => DetailScreen(
+                                      jobId: jobId,
+                                      job: selectedJob,
+                                      rating: rating,
+                                    ),
                                     transition: Transition.rightToLeft,
                                     duration: const Duration(milliseconds: 280),
                                   );
@@ -976,14 +988,24 @@ class HomeScreen extends StatelessWidget {
                                             size: 17,
                                           ),
                                           const SizedBox(width: 7),
-                                          const Expanded(
-                                            child: Text(
-                                              'Lokasi pekerjaan belum tersedia',
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                color: mutedColor,
-                                                fontSize: 11,
+                                          Expanded(
+                                            child: Obx(
+                                              () => Text(
+                                                cnt.getJobLocationLabel(
+                                                  jobId ?? 0,
+                                                  (gig['latitude'] as num?)
+                                                          ?.toDouble() ??
+                                                      0.0,
+                                                  (gig['longitude'] as num?)
+                                                          ?.toDouble() ??
+                                                      0.0,
+                                                ),
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  color: mutedColor,
+                                                  fontSize: 11,
+                                                ),
                                               ),
                                             ),
                                           ),

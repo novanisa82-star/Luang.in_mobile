@@ -5,6 +5,7 @@ import 'package:geocoding/geocoding.dart';
 
 class LocationController extends GetxController {
   final locationName = 'Mendeteksi lokasi...'.obs;
+  final currentPosition = Rxn<Position>();
   final isLoading = false.obs;
 
   @override
@@ -44,6 +45,7 @@ class LocationController extends GetxController {
           timeLimit: Duration(seconds: 20),
         ),
       );
+      currentPosition.value = position;
 
       if (kIsWeb) {
         locationName.value =

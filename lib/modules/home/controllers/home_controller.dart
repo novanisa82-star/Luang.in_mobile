@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:luang_in/core/config/api_config.dart';
 
 import '../../../core/services/api_service.dart';
 import '../../../data/models/home_model.dart';
 import '../../../utils/pallete_color.dart';
+import 'location_controller.dart';
 
 class HomeController extends GetxController {
   final ApiService apiService = Get.find<ApiService>();
 
   final RxList<HomeModel> pekerjaanList = <HomeModel>[].obs;
+  final RxMap<int, String> jobLocations = <int, String>{}.obs;
 
   final isLoading = false.obs;
   final errorMessage = ''.obs;
@@ -57,6 +61,7 @@ class HomeController extends GetxController {
       pekerjaanList.assignAll(
         data.whereType<Map<String, dynamic>>().map(HomeModel.fromJson),
       );
+      _resolveJobLocations();
     } catch (e) {
       errorMessage.value = e.toString().replaceFirst('Exception: ', '');
     } finally {
@@ -110,6 +115,65 @@ class HomeController extends GetxController {
     }
 
     return 'Rp$buffer';
+  }
+
+  Future<void> _resolveJobLocations() async {
+    for (final job in pekerjaanList) {
+      if (job.latitude == 0 && job.longitude == 0) continue;
+      if (jobLocations.containsKey(job.id)) continue;
+
+      try {
+        final places = await placemarkFromCoordinates(
+          job.latitude,
+          job.longitude,
+        );
+        if (places.isNotEmpty) {
+          final place = places.first;
+          final parts = <String>[
+            if (place.subLocality != null && place.subLocality!.isNotEmpty)
+              place.subLocality!,
+            if (place.subAdministrativeArea != null &&
+                place.subAdministrativeArea!.isNotEmpty)
+              place.subAdministrativeArea!
+            else if (place.locality != null && place.locality!.isNotEmpty)
+              place.locality!
+            else if (place.administrativeArea != null &&
+                place.administrativeArea!.isNotEmpty)
+              place.administrativeArea!,
+          ];
+          if (parts.isNotEmpty) {
+            jobLocations[job.id] = parts.join(', ');
+          }
+        }
+      } catch (_) {
+        // Abaikan jika geocoding gagal pada perangkat/web tertentu
+      }
+    }
+  }
+
+  String getJobLocationLabel(int jobId, double lat, double lng) {
+    String area = jobLocations[jobId] ?? '';
+    if (area.isEmpty) {
+      area = (lat != 0 || lng != 0)
+          ? '${lat.toStringAsFixed(4)}, ${lng.toStringAsFixed(4)}'
+          : 'Lokasi belum tersedia';
+    }
+
+    if (Get.isRegistered<LocationController>()) {
+      final pos = Get.find<LocationController>().currentPosition.value;
+      if (pos != null && (lat != 0 || lng != 0)) {
+        final meters = Geolocator.distanceBetween(
+          pos.latitude,
+          pos.longitude,
+          lat,
+          lng,
+        );
+        final km = meters / 1000.0;
+        return '$area · ${km.toStringAsFixed(1)} km';
+      }
+    }
+
+    return area;
   }
 
   List<Map<String, dynamic>> get filteredGigs {

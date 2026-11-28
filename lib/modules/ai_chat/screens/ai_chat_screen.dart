@@ -538,7 +538,11 @@ class AiChatScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(18),
           onTap: () {
             Get.to(
-              () => DetailScreen(rating: job.rating),
+              () => DetailScreen(
+                jobId: job.id,
+                job: job,
+                rating: job.rating,
+              ),
               transition: Transition.rightToLeft,
               duration: const Duration(milliseconds: 280),
             );

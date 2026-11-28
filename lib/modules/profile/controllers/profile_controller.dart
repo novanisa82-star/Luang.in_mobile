@@ -158,61 +158,63 @@ class ProfileController extends GetxController {
 
   void showPhotoOptions() {
     Get.bottomSheet(
-      Container(
-        padding: const EdgeInsets.fromLTRB(20, 22, 20, 28),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 38,
-              height: 4,
-              decoration: BoxDecoration(
-                color: const Color(0xFFE4E1E9),
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Ubah foto profil',
-                style: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF29243A),
+      SafeArea(
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(20, 22, 20, 28),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 38,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE4E1E9),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(
-                Icons.camera_alt_outlined,
-                color: Color(0xFF8833E6),
+              const SizedBox(height: 20),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Ubah foto profil',
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF29243A),
+                  ),
+                ),
               ),
-              title: const Text('Ambil dari kamera'),
-              onTap: () {
-                Get.back();
-                pickPhoto(ImageSource.camera);
-              },
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(
-                Icons.photo_library_outlined,
-                color: Color(0xFF8833E6),
+              const SizedBox(height: 16),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(
+                  Icons.camera_alt_outlined,
+                  color: Color(0xFF8833E6),
+                ),
+                title: const Text('Ambil dari kamera'),
+                onTap: () {
+                  Get.back();
+                  pickPhoto(ImageSource.camera);
+                },
               ),
-              title: const Text('Pilih dari galeri'),
-              onTap: () {
-                Get.back();
-                pickPhoto(ImageSource.gallery);
-              },
-            ),
-          ],
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(
+                  Icons.photo_library_outlined,
+                  color: Color(0xFF8833E6),
+                ),
+                title: const Text('Pilih dari galeri'),
+                onTap: () {
+                  Get.back();
+                  pickPhoto(ImageSource.gallery);
+                },
+              ),
+            ],
+          ),
         ),
       ),
       isScrollControlled: true,
