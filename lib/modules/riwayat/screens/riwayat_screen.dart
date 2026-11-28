@@ -602,6 +602,42 @@ class _RiwayatScreenState extends State<RiwayatScreen> {
             ],
           ),
           const SizedBox(height: 16),
+          if (item.status.toLowerCase() == 'ditolak' &&
+              item.catatanPenolakan != null &&
+              item.catatanPenolakan!.isNotEmpty) ...[
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.only(bottom: 14),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFF1F2),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFFECDD3)),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.info_outline_rounded,
+                    size: 16,
+                    color: Color(0xFFE11D48),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Alasan: ${item.catatanPenolakan!}',
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF9F1239),
+                        height: 1.35,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           Container(height: 1, color: const Color(0xFFF0EDF5)),
           const SizedBox(height: 14),
           Row(

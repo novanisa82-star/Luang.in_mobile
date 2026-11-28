@@ -275,6 +275,60 @@ class DetailScreen extends StatelessWidget {
                           .scale(begin: const Offset(0.95, 0.95)),
                     ],
 
+                    // CATATAN PENOLAKAN JIKA DITOLAK
+                    if (currentJob.sudahMelamar &&
+                        currentJob.statusLamaran?.toLowerCase() == 'ditolak' &&
+                        currentJob.catatanPenolakan != null &&
+                        currentJob.catatanPenolakan!.isNotEmpty) ...[
+                      const SizedBox(height: 16),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFF1F2),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: const Color(0xFFFECDD3),
+                          ),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(
+                              Icons.info_outline_rounded,
+                              color: Color(0xFFE11D48),
+                              size: 20,
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Alasan Penolakan dari Perusahaan',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w800,
+                                      color: Color(0xFF9F1239),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    currentJob.catatanPenolakan!,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      color: Color(0xFF881337),
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+
                     const SizedBox(height: 20),
 
                     // 2. KARTU UPAH

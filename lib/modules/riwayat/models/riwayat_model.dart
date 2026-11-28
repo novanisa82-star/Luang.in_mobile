@@ -7,6 +7,7 @@ class RiwayatModel {
   final String status;
   final String informasi;
   final int? upah;
+  final String? catatanPenolakan;
   final String? whatsappPt;
   final DateTime tanggal;
 
@@ -19,6 +20,7 @@ class RiwayatModel {
     required this.informasi,
     required this.tanggal,
     this.upah,
+    this.catatanPenolakan,
     this.whatsappPt,
   });
 
@@ -31,6 +33,7 @@ class RiwayatModel {
       status: _normalisasiStatus(json['status']?.toString()),
       informasi: json['informasi']?.toString() ?? '',
       upah: _parseUpah(json['upah']),
+      catatanPenolakan: json['catatan_penolakan']?.toString(),
       whatsappPt: json['whatsapp_pt']?.toString(),
       tanggal: DateTime.tryParse(json['tanggal']?.toString() ?? '')
           ?? DateTime.now(),

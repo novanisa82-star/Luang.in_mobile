@@ -19,6 +19,7 @@ class HomeModel {
   final DateTime? deadlinePendaftaran;
   final bool sudahMelamar;
   final String? statusLamaran;
+  final String? catatanPenolakan;
   final String? whatsappPt;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -44,6 +45,7 @@ class HomeModel {
     this.deadlinePendaftaran,
     this.sudahMelamar = false,
     this.statusLamaran,
+    this.catatanPenolakan,
     this.whatsappPt,
     this.createdAt,
     this.updatedAt,
@@ -71,6 +73,7 @@ class HomeModel {
       deadlinePendaftaran: DateTime.tryParse('${json['deadline_pendaftaran'] ?? ''}'),
       sudahMelamar: json['sudah_melamar'] == true,
       statusLamaran: json['status_lamaran']?.toString(),
+      catatanPenolakan: json['catatan_penolakan']?.toString(),
       whatsappPt: json['whatsapp_pt']?.toString(),
       createdAt: DateTime.tryParse('${json['created_at'] ?? ''}'),
       updatedAt: DateTime.tryParse('${json['updated_at'] ?? ''}'),

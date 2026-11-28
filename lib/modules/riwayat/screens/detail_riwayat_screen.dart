@@ -76,7 +76,9 @@ class DetailRiwayatScreen extends StatelessWidget {
       case 'diterima':
         return 'Selamat! Lamaran kamu diterima. Periksa informasi tindak lanjut dari perusahaan.';
       case 'ditolak':
-        return 'Lamaran ini belum berhasil. Tetap semangat mencari peluang pekerjaan lainnya.';
+        return informasi.isNotEmpty
+            ? 'Alasan penolakan: $informasi'
+            : 'Lamaran ini belum berhasil. Tetap semangat mencari peluang pekerjaan lainnya.';
       default:
         return 'Lamaran kamu sedang diproses. Periksa kembali secara berkala untuk mengetahui pembaruan status.';
     }
